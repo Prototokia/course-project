@@ -1,0 +1,67 @@
+# --- Результаты компиляции ---
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# --- Библиотеки ---
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.dylib
+
+# --- Отладочная информация ---
+*.pdb
+*.idb
+*.ilk
+
+# --- Папки сборки ---
+build/
+Debug/
+Release/
+x64/
+out/
+bin/
+obj/
+
+# --- Служебные файлы IDE ---
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# --- CMake ---
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# --- .NET / C# ---
+# Управление пакетами (NuGet)
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+
+# --- Результаты тестов, профилирования и публикации ---
+TestResults/
+Publish/
+*.publishproj
+*.coverage
+*.coveragexml
+
+# --- Кэш и временные файлы ReSharper / Rider ---
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.rsuser
+
+# --- Кэш сборок MSBuild ---
+*.msbuild.project.cache
+.msbuild/
