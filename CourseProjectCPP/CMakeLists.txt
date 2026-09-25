@@ -12,7 +12,7 @@ endif()
 project ("CourseProjectCPP")
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h")
+add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h" "card.cpp" "card.hpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CourseProjectCPP PROPERTY CXX_STANDARD 20)
