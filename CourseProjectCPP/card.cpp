@@ -42,4 +42,9 @@ bool Card::Upgrade()
 	return true;
 }
 
+Card::~Card()
+{
+	std::cout << "Card " << m_name << " destroyed.\n";
+}
+
 } // namespace cards

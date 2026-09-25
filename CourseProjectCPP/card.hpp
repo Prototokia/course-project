@@ -43,7 +43,7 @@ public:
 	Card(Card&&)                 = delete;
 	Card& operator=(const Card&) = delete;
 	Card& operator=(Card&&)      = delete;
-	~Card()                      = default;
+	~Card();
 
 	bool Play(int& playerMana);
 	bool Upgrade();
