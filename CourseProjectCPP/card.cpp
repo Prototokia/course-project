@@ -22,7 +22,7 @@ bool Card::Play(int& playerMana)
 
 	playerMana -= m_manaCost;
 
-	std::cout << "The card " << m_name << "has been played. " << "Remaining mana: " << playerMana << std::endl;
+	std::cout << "The card " << m_name << " has been played. " << "Remaining mana: " << playerMana << std::endl;
 
 	return true;
 }
