@@ -44,6 +44,7 @@ public:
 
 	void Shuffle();
 	void AddCard(Card* card);
+	Card* RemoveCardAt(std::uint32_t index);
 	Card* DrawCard();
 
 	[[nodiscard]] Card* GetCardAt(std::uint32_t index) const
