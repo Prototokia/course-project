@@ -12,8 +12,14 @@ Player::Player(std::int32_t health, std::int32_t mana, std::int32_t coins)
 	m_currentMana = m_maxMana;
 }
 
-void Player::TakeDamage(std::uint32_t damageAmount)
+void Player::TakeDamage(std::int32_t damageAmount)
 {
+	if (damageAmount < 0)
+	{
+		std::cout << "Damage amount must be positive.\n";
+
+		return;
+	}
 	if (m_currentHealth - damageAmount < 0)
 	{
 		m_currentHealth = 0;
@@ -24,8 +30,14 @@ void Player::TakeDamage(std::uint32_t damageAmount)
 	}
 }
 
-void Player::Heal(std::uint32_t healAmount)
+void Player::Heal(std::int32_t healAmount)
 {
+	if (healAmount < 0)
+	{
+		std::cout << "Heal amount must be positive.\n";
+
+		return;
+	}
 	if (m_currentHealth + healAmount > m_maxHealth)
 	{
 		m_currentHealth = m_maxHealth;
@@ -72,7 +84,7 @@ bool Player::DrawCard()
 	return true;
 }
 
-bool Player::PlayCard(std::uint32_t cardIndex)
+bool Player::PlayCard(std::int32_t cardIndex)
 {
 	if (cardIndex >= m_hand.GetCount())
 	{

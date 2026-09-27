@@ -40,8 +40,8 @@ public:
 	Player& operator=(Player&&)      = delete;
 	~Player();
 
-	void TakeDamage(std::uint32_t damageAmount);
-	void Heal(std::uint32_t healAmount);
+	void TakeDamage(std::int32_t damageAmount);
+	void Heal(std::int32_t healAmount);
 	bool DrawCard();
 	bool PlayCard(std::uint32_t cardIndex);
 
