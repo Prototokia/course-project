@@ -86,7 +86,7 @@ bool Player::DrawCard()
 
 bool Player::PlayCard(std::int32_t cardIndex)
 {
-	if (cardIndex >= m_hand.GetCount())
+	if (cardIndex < 0 || cardIndex >= m_hand.GetCount())
 	{
 		std::cout << "Invalid card index.\n";
 

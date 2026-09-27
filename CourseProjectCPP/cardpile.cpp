@@ -3,7 +3,7 @@
 namespace cards
 {
 
-CardPile::CardPile(CardPileType cardPileType, std::uint32_t capacity)
+CardPile::CardPile(CardPileType cardPileType, std::int32_t capacity)
 	: m_type{ cardPileType }
 	, m_capacity{ capacity > 0 ? capacity : 1 }
 {
@@ -21,10 +21,10 @@ void CardPile::AddCard(Card* card)
 
 	if (m_count == m_capacity)
 	{
-		std::uint32_t newCapacity = m_capacity * 2;
+		std::int32_t newCapacity = m_capacity * 2;
 		Card** newCards = new Card*[newCapacity];
 
-		for (int i = 0; i < m_count; i++)
+		for (int32_t i = 0; i < m_count; i++)
 		{
 			newCards[i] = m_cards[i];
 		}
@@ -39,13 +39,13 @@ void CardPile::AddCard(Card* card)
 	m_count++;
 }
 
-Card* CardPile::RemoveCardAt(std::uint32_t index)
+Card* CardPile::RemoveCardAt(std::int32_t index)
 {
 	if (index >= m_count) return nullptr;
 
 	Card* removedCard = m_cards[index];
 
-	for (int i = index; i < m_count; i++)
+	for (int32_t i = index; i < m_count - 1; i++)
 	{
 		m_cards[i] = m_cards[i + 1];
 	}

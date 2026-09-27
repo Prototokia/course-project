@@ -43,7 +43,7 @@ public:
 	void TakeDamage(std::int32_t damageAmount);
 	void Heal(std::int32_t healAmount);
 	bool DrawCard();
-	bool PlayCard(std::uint32_t cardIndex);
+	bool PlayCard(std::int32_t cardIndex);
 
 	[[nodiscard]] std::int32_t GetMaxHealth() const
 	{

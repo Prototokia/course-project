@@ -27,13 +27,13 @@ private:
 
 	Card** m_cards{ nullptr };
 
-	std::uint32_t m_count{ BASE_COUNT };
-	std::uint32_t m_capacity{ BASE_CAPACITY };
+	std::int32_t m_count{ BASE_COUNT };
+	std::int32_t m_capacity{ BASE_CAPACITY };
 
 	CardPileType m_type{ CardPileType::eNone };
 
 public:
-	CardPile(CardPileType cardPileType, std::uint32_t capacity);
+	CardPile(CardPileType cardPileType, std::int32_t capacity);
 
 	CardPile()                           = delete;
 	CardPile(const CardPile&)            = delete;
@@ -44,21 +44,21 @@ public:
 
 	void Shuffle();
 	void AddCard(Card* card);
-	Card* RemoveCardAt(std::uint32_t index);
+	Card* RemoveCardAt(std::int32_t index);
 	Card* DrawCard();
 
-	[[nodiscard]] Card* GetCardAt(std::uint32_t index) const
+	[[nodiscard]] Card* GetCardAt(std::int32_t index) const
 	{
 		if (index >= m_count) return nullptr;
 		return m_cards[index];
 	}
 
-	[[nodiscard]] std::uint32_t GetCount() const
+	[[nodiscard]] std::int32_t GetCount() const
 	{
 		return m_count;
 	}
 
-	[[nodiscard]] std::uint32_t GetCapacity() const
+	[[nodiscard]] std::int32_t GetCapacity() const
 	{
 		return m_capacity;
 	}

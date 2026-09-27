@@ -30,13 +30,13 @@ private:
 	
 	CardType m_cardType{ CardType::eNone };
 
-	std::uint8_t m_manaCost{ BASE_COST };
-	std::uint32_t m_value{ BASE_VALUE };
+	std::int32_t m_manaCost{ BASE_COST };
+	std::int32_t m_value{ BASE_VALUE };
 
 	bool m_isUpgraded{ false };
 
 public:
-	Card(std::string_view name, std::string_view textAbility, CardType cardType, std::uint8_t cost, std::uint32_t value);
+	Card(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t cost, std::int32_t value);
 
 	Card()                       = delete;
 	Card(const Card&)            = delete;
@@ -45,7 +45,7 @@ public:
 	Card& operator=(Card&&)      = delete;
 	~Card();
 
-	bool Play(int& playerMana);
+	bool Play(std::int32_t& playerMana);
 	bool Upgrade();
 
 	[[nodiscard]] std::string_view GetName() const
@@ -63,12 +63,12 @@ public:
 		return m_cardType;
 	}
 
-	[[nodiscard]] std::uint8_t GetCost() const
+	[[nodiscard]] std::int32_t GetCost() const
 	{
 		return m_manaCost;
 	}
 
-	[[nodiscard]] std::uint32_t GetValue() const
+	[[nodiscard]] std::int32_t GetValue() const
 	{
 		return m_value;
 	}
@@ -88,12 +88,12 @@ public:
 		m_cardType = cardType;
 	}
 
-	void SetCost(std::uint8_t manaCost)
+	void SetCost(std::int32_t manaCost)
 	{
 		m_manaCost = manaCost;
 	}
 
-	void SetValue(std::uint32_t value)
+	void SetValue(std::int32_t value)
 	{
 		m_value = value;
 	}

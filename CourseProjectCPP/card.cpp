@@ -3,7 +3,7 @@
 namespace cards
 {
 
-Card::Card(std::string_view name, std::string_view textAbility, CardType cardType, std::uint8_t manaCost, std::uint32_t value)
+Card::Card(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t manaCost, std::int32_t value)
 	: m_name{ name }
 	, m_textAbility{ textAbility }
 	, m_cardType{ cardType }
@@ -11,7 +11,7 @@ Card::Card(std::string_view name, std::string_view textAbility, CardType cardTyp
 	, m_value{ value }
 {}
 
-bool Card::Play(int& playerMana)
+bool Card::Play(std::int32_t& playerMana)
 {
 	if (playerMana < m_manaCost) 
 	{
