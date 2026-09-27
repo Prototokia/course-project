@@ -96,4 +96,4 @@ CardPile::~CardPile()
 	std::cout << "CardPile destroyed.\n";
 }
 
-}
+} // namespace cards

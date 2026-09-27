@@ -56,16 +56,19 @@ bool Player::DrawCard()
 		m_draw.Shuffle();
 	}
 
+	cards::Card* drawnCard = m_draw.DrawCard();
+
 	if (m_hand.GetCount() >= MAX_HAND_SIZE)
 	{
 		std::cout << "Hand is full.\n";
 
-		return false;
+		m_discard.AddCard(drawnCard);
 	}
-
-	cards::Card* drawnCard = m_draw.DrawCard();
-	m_hand.AddCard(drawnCard);
-
+	else
+	{
+		m_hand.AddCard(drawnCard);
+	}
+	
 	return true;
 }
 
@@ -73,7 +76,7 @@ bool Player::PlayCard(std::uint32_t cardIndex)
 {
 	if (cardIndex >= m_hand.GetCount())
 	{
-		std::count << "Invalid card index.\n";
+		std::cout << "Invalid card index.\n";
 
 		return false;
 	}
@@ -96,4 +99,4 @@ Player::~Player()
 	std::cout << "Player destroyed.\n";
 }
 
-}
+} // namespace entities

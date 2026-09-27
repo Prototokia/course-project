@@ -73,4 +73,5 @@ public:
 		m_type = cardPileType;
 	}
 };
-}
+
+} // namespace cards

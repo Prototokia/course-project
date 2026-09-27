@@ -95,4 +95,5 @@ public:
 		m_coins = amount;
 	}
 };
-}
+
+} // namespace entities
