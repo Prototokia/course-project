@@ -24,10 +24,10 @@ private:
 	std::int32_t m_currentMana{ BASE_MANA };
 	std::int32_t m_coins{ BASE_COINS };
 
-	cards::CardPile m_deck{ cards::CardPile(cards::CardPile::CardPileType::eDeck, BASE_CAPACITY) };
-	cards::CardPile m_hand{ cards::CardPile(cards::CardPile::CardPileType::eHand, BASE_CAPACITY) };
-	cards::CardPile m_discard{ cards::CardPile(cards::CardPile::CardPileType::eDiscard, BASE_CAPACITY) };
-	cards::CardPile m_draw{ cards::CardPile(cards::CardPile::CardPileType::eDraw, BASE_CAPACITY) };
+	cards::CardPile m_deck{ cards::CardPile::CardPileType::eDeck, BASE_CAPACITY };
+	cards::CardPile m_hand{ cards::CardPile::CardPileType::eHand, BASE_CAPACITY };
+	cards::CardPile m_discard{ cards::CardPile::CardPileType::eDiscard, BASE_CAPACITY };
+	cards::CardPile m_draw{ cards::CardPile::CardPileType::eDraw, BASE_CAPACITY };
 
 public:
 	Player(std::int32_t health, std::int32_t mana, std::int32_t coins);
