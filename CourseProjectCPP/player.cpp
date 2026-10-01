@@ -106,6 +106,19 @@ bool Player::PlayCard(std::int32_t cardIndex)
 	return true;
 }
 
+void Player::AddCardToDeck(cards::Card* card)
+{
+	m_deck.AddCard(card);
+}
+
+void Player::PrepareForCombat()
+{
+	for (std::int32_t i = 0; i < m_deck.GetCount(); i++) 
+	{
+		m_draw.AddCard(m_deck.GetCardAt(i));
+	}
+}
+
 Player::~Player()
 {
 	std::cout << "Player destroyed.\n";
