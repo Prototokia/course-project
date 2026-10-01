@@ -10,7 +10,6 @@ namespace entities
 
 class Player
 {
-public:
 
 private:
 	static constexpr auto BASE_HEALTH = 0;

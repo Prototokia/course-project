@@ -7,10 +7,10 @@ Player::Player(std::int32_t health, std::int32_t mana, std::int32_t coins)
 	: m_maxHealth{ health }
 	, m_maxMana{ mana }
 	, m_coins{ coins }
-{
-	m_currentHealth = m_maxHealth;
-	m_currentMana = m_maxMana;
-}
+	, m_currentHealth{ health }
+	, m_currentMana{ mana }
+{}
+
 
 void Player::TakeDamage(std::int32_t damageAmount)
 {
