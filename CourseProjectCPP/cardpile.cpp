@@ -41,7 +41,7 @@ void CardPile::AddCard(Card* card)
 
 Card* CardPile::RemoveCardAt(std::int32_t index)
 {
-	if (index >= m_count) return nullptr;
+	if (index < 0 || index >= m_count) return nullptr;
 
 	Card* removedCard = m_cards[index];
 

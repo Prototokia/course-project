@@ -49,7 +49,7 @@ public:
 
 	[[nodiscard]] Card* GetCardAt(std::int32_t index) const
 	{
-		if (index >= m_count) return nullptr;
+		if (index < 0 || index >= m_count) return nullptr;
 		return m_cards[index];
 	}
 
