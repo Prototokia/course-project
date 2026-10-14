@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CourseProjectCS.Cards {
-    internal class CardType {
+﻿namespace CourseProjectCS.Cards {
+    enum CardType {
+        None,
+        Attack,
+        Skill,
+        Effect
     }
 }

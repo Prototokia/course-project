@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CourseProjectCS.Entities {
+namespace CourseProjectCS.Cards {
     internal class Cardpile {
     }
 }
