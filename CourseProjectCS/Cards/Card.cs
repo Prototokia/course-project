@@ -4,12 +4,12 @@ using System.Text;
 
 namespace CourseProjectCS.Cards {
     internal class Card {
-        private bool _isUpgraded = false;
-        public string Name { get; private set; } = "";
-        public string TextAbility { get; private set; } = "";
-        public CardType Type { get; private set; } = CardType.None;
-        public int Cost { get; private set; } = default;
-        public int Value { get; private set; } = default;
+        private bool _isUpgraded;
+        public string Name { get; private set; } 
+        public string TextAbility { get; private set; } 
+        public CardType Type { get; private set; } 
+        public int Cost { get; private set; } 
+        public int Value { get; private set; } 
 
         public Card(string name, string textAbility, CardType type, int cost, int value) {
             Name = name;
