@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace CourseProjectCS.Cards {
-    enum CardpileType {
+    enum CardPileType {
         None,
         Deck,
         Hand,

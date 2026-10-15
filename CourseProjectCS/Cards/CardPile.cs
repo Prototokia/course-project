@@ -5,8 +5,9 @@ using System.Text;
 namespace CourseProjectCS.Cards {
     internal class CardPile {
         private readonly List<Card> _cards = [];
-        public CardPileType Type { get; } 
-
+        public CardPileType Type { get; }
+        public int Count => _cards.Count;
+        public Card this[int index] => _cards[index];
         public CardPile(CardPileType type) {
             Type = type;
         }
