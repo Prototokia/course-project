@@ -27,7 +27,11 @@ namespace CourseProjectCS.Entities {
         }
 
         public override string ToString() {
-            return $"Характеристики игрока. Текущее здоровье: {CurrentHealth}, Текущая мана: {CurrentMana}, Текущее количество монет: {CurrentCoins}";
+            return $"Характеристики игрока. Текущее здоровье: {CurrentHealth}, Текущая мана: {CurrentMana}, Текущее количество монет: {CurrentCoins}." +
+                $"Количество карт в колоде: {_deck.Count}" +
+                $"Количество карт в руке: {_hand.Count}" +
+                $"Количество карт в доборе: {_draw.Count}" +
+                $"Количество карт в сбросе: {_discard.Count}";
         }
 
         public void TakeDamage(int damageAmount) {
