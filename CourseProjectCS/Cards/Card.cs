@@ -23,18 +23,18 @@ namespace CourseProjectCS.Cards {
             return $"Карта {Name}, Способность {TextAbility}, Тип {Type}, Цена {Cost}, Значение {Value}";
         }
 
-        public bool Play(ref int playerMana) {
-            if (playerMana < Cost) {
+        public bool CanPlay(int availableMana) {
+            if (availableMana < Cost) {
                 Console.WriteLine("Недостаточно маны");
 
                 return false;
             }
 
-            playerMana -= Cost;
-
-            Console.WriteLine($"Карта {Name} была разыграна. Оставшаяся мана: {playerMana}.");
-
             return true;
+        }
+
+        public void Play() {
+            Console.WriteLine($"Карта {Name} была сыграна");
         }
 
         public bool Upgrade() {
