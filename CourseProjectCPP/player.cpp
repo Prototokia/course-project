@@ -50,38 +50,54 @@ void Player::Heal(std::int32_t healAmount)
 
 bool Player::DrawCard()
 {
-	if (m_draw.GetCount() == 0)
+	while (true)
 	{
-		if (m_discard.GetCount() == 0)
+		if (m_draw.GetCount() == 0)
 		{
-			std::cout << "Both draw and discard piles are empty! Cannot draw.\n";
+			if (m_discard.GetCount() == 0)
+			{
+				std::cout << "Both draw and discard piles are empty! Cannot draw.\n";
 
-			return false;
+				return false;
+			}
+
+			while (m_discard.GetCount() > 0)
+			{
+				auto recycledCard = m_discard.DrawCard();
+
+				if (recycledCard.expired())
+				{
+					std::cout << "Skipping expired card reference.\n";
+					continue;
+				}
+
+				m_draw.AddCard(std::move(recycledCard));
+			}
+
+			m_draw.Shuffle();
 		}
 
-		while (m_discard.GetCount() > 0)
+		auto drawnCard = m_draw.DrawCard();
+
+		if (drawnCard.expired())
 		{
-			cards::Card* recycledCard = m_discard.DrawCard();
-			m_draw.AddCard(recycledCard);
+			std::cout << "Skipping expired card reference.\n";
+			continue;
 		}
 
-		m_draw.Shuffle();
-	}
+		if (m_hand.GetCount() >= MAX_HAND_SIZE)
+		{
+			std::cout << "Hand is full.\n";
 
-	cards::Card* drawnCard = m_draw.DrawCard();
+			m_discard.AddCard(std::move(drawnCard));
+		}
+		else
+		{
+			m_hand.AddCard(std::move(drawnCard));
+		}
 
-	if (m_hand.GetCount() >= MAX_HAND_SIZE)
-	{
-		std::cout << "Hand is full.\n";
-
-		m_discard.AddCard(drawnCard);
+		return true;
 	}
-	else
-	{
-		m_hand.AddCard(drawnCard);
-	}
-	
-	return true;
 }
 
 bool Player::PlayCard(std::int32_t cardIndex)
@@ -93,29 +109,47 @@ bool Player::PlayCard(std::int32_t cardIndex)
 		return false;
 	}
 
-	cards::Card* cardToPlay = m_hand.GetCardAt(cardIndex);
+	auto cardToPlay = m_hand.GetCardAt(cardIndex).lock();
 
+	if (!cardToPlay)
+	{
+		m_hand.RemoveCardAt(cardIndex);
+
+		return false;
+	}
 	if (!cardToPlay->Play(m_currentMana))
 	{
 		return false;
 	}
 
-	m_hand.RemoveCardAt(cardIndex);
-	m_discard.AddCard(cardToPlay);
+	auto played = m_hand.RemoveCardAt(cardIndex);
+	m_discard.AddCard(std::move(played));
 
 	return true;
 }
 
-void Player::AddCardToDeck(cards::Card* card)
+void Player::AddCardToDeck(const std::shared_ptr<cards::Card>& card)
 {
-	m_deck.AddCard(card);
+	if (!card)
+	{
+		return;
+	}
+
+	m_deck.AddCard(std::weak_ptr<cards::Card>{ card });;
 }
 
 void Player::PrepareForCombat()
 {
 	for (std::int32_t i = 0; i < m_deck.GetCount(); i++) 
 	{
-		m_draw.AddCard(m_deck.GetCardAt(i));
+		auto card = m_deck.GetCardAt(i).lock();
+
+		if (!card) 
+		{
+			continue;
+		}
+
+		m_draw.AddCard(std::weak_ptr<cards::Card>{ card });
 	}
 }
 
