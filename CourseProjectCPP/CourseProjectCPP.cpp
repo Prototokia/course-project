@@ -4,112 +4,85 @@
 
 int main()
 {
-	std::cout << "=== 1. Static Object in Scope and Dynamic Object ===\n";
-	cards::Card* dynamicCard = nullptr;
+	std::cout << "=== Smart Pointers Demonstration ===\n";
+	std::cout << "\n=== 5.1. unique_ptr ===\n";
 
 	{
-		std::cout << "--- Entering local scope ---\n";
-		cards::Card staticCard{ "Mana Ray", "Deals 6 damage", cards::Card::CardType::eAttack, 1, 6 };
+		std::cout << "Local scope\n";
 
-		std::cout << "[static card] Mana ray cost = " << staticCard.GetCost() << "\n";
+		auto uniqueCard = std::make_unique<cards::Card>("Mana blaze", "Gain 1 mana", cards::Card::CardType::eSkill, 0, 1);
 
-		dynamicCard = new cards::Card("Barrier", "Gain 5 block", cards::Card::CardType::eSkill, 1, 5);
-		std::cout << "--- Exiting local scope (staticCard will be destroyed) ---\n";
+		std::cout << "Original pointer owns: " << uniqueCard->GetName() << "\n";
+
+		auto transferedCard = std::move(uniqueCard);
+
+		std::cout << "Original pointer is: " << (uniqueCard ? "not null" : "null") << "\n";
+
+		std::cout << "New owner owns: " << transferedCard->GetName() << "\n";
+
+		std::cout << "Leaving local scope...\n";
 	}
+
+	std::cout << "\n=== 5.2. shared_ptr ===\n";
+
+	auto sharedCard = std::make_shared<cards::Card>("Fireball", "Deals 12 damage", cards::Card::CardType::eAttack, 1, 12);
+
+	std::cout << "Initial use_count: " << sharedCard.use_count() << "\n";
+
+	{
+		auto sharedCopy = sharedCard;
+
+		std::cout << "After copying use_count: " << sharedCard.use_count() << "\n";
+
+		std::cout << "Copy accesses card: " << sharedCopy->GetName() << "\n";
+
+		std::cout << "Leaving local scope...\n";
+	}
+
+	std::cout << "After sharedCopy destruction use_count: " << sharedCard.use_count() << "\n";
+
+	std::cout << "Resetting the last shared_ptr...\n";
+	sharedCard.reset();
+
+	std::cout << "use_count after reset: " << sharedCard.use_count() << "\n";
 	
-	std::cout << "[dynamic card] " << dynamicCard->GetName() << " value = " << dynamicCard->GetValue() << "\n";
-	dynamicCard->Upgrade();
-	std::cout << "[dynamic card] " << dynamicCard->GetName() << "+ value = " << dynamicCard->GetValue() << "\n";
-	dynamicCard->Upgrade();
+	std::cout << "\n=== 5.3. weak_ptr ===\n";
 
-	std::cout << "Destroying dynamic card\n";
-	delete dynamicCard;
-	dynamicCard = nullptr;
+	std::weak_ptr<cards::Card> weakCard;
 
-	std::cout << "\n\n";
-
-	std::cout << "=== 2. Dynamic Array of Objects ===\n";
-	cards::Card* cardArray = new cards::Card[2]
 	{
-		cards::Card("Mana Blaze", "Gain 1 mana", cards::Card::CardType::eSkill, 0, 1),
-		cards::Card("Death Ray", "Deals 18 damage to all enemies", cards::Card::CardType::eAttack, 2, 18)
-	};
+		auto strongOwner = std::make_shared<cards::Card>("Ice bolt", "Deals 10 damage", cards::Card::CardType::eAttack, 1, 10);
 
-	std::cout << "Destroying dynamic array of objects\n";
-	delete[] cardArray;
-	cardArray = nullptr;
+		weakCard = strongOwner;
 
-	std::cout << "\n\n";
+		std::cout << "Created weak_ptr. Object expired: " << (weakCard.expired() ? "yes" : "no") << "\n";
 
-	std::cout << "=== 3. Array of Dynamic Objects ===\n";
-	cards::Card** cardPtrArray = new cards::Card*[2]
-	{
-		new cards::Card("Plague", "Inflict 3 vulnerable and 3 weakness to all enemies", cards::Card::CardType::eSkill, 2, 3),
-		new cards::Card("Carapace", "Ignore next incoming damage once", cards::Card::CardType::eSkill, 2, 1)
-	};
+		std::cout << "use_count after creating weak_ptr: " << strongOwner.use_count() << "\n";
 
-	std::cout << "Replacing element at index 0\n";
-	delete cardPtrArray[0];
-	cardPtrArray[0] = nullptr;
+		{
+			auto lockedCard = weakCard.lock();
 
-	cardPtrArray[0] = new cards::Card("Ice bolt", "Deals 10 damage, inflicts freeze", cards::Card::CardType::eAttack, 1, 10);
+			std::cout << "lock() succeeded. Card name: " << lockedCard->GetName() << "\n";
 
-	std::cout << "Destroying array of dynamic objects\n";
-	for (std::int32_t i = 0; i < 2; i++) 
-	{
-		delete cardPtrArray[i];
-		cardPtrArray[i] = nullptr;
+			std::cout << "use_count while locked: " << strongOwner.use_count() << "\n";
+
+			std::cout << "Leaving lockedCard scope...\n";
+		}
+
+		std::cout << "use_count after lock scope: " << strongOwner.use_count() << "\n";
+		
+		std::cout << "Leaving strong owner's scope...\n";
 	}
 
-	delete[] cardPtrArray;
-	cardPtrArray = nullptr;
+	std::cout << "After owner destruction, object expired: " << (weakCard.expired() ? "yes" : "no") << "\n";
 
-	std::cout << "\n\n";
-
-	std::cout << "=== 4. Composition and Aggregation ===\n";
-	std::cout << "Creating aggregated cards\n";
-
-	cards::Card* card1 = new cards::Card("Judjement", "Deals 42 damage", cards::Card::CardType::eAttack, 3, 42);
-	cards::Card* card2 = new cards::Card("Heal", "Heals 10 hp", cards::Card::CardType::eSkill, 2, 10);
-
+	if (auto lockedCard = weakCard.lock())
 	{
-		std::cout << "\n--- Entering Player local scope ---\n";
-		entities::Player player{ 80, 3, 100 };
-
-		player.AddCardToDeck(card1);
-		player.AddCardToDeck(card2);
-
-		player.PrepareForCombat();
-
-		player.DrawCard();
-		player.DrawCard();
-
-		std::cout << "--- Round 1: Valid Action ---\n";
-		bool isPlayed = player.PlayCard(0);
-
-		std::cout << ((isPlayed) ? "Success" : "Error") << "\n";
-
-		std::cout << "Current mana: " << player.GetCurrentMana() << "\n";
-
-		std::cout << "--- Round 2: Invalid Action ---\n";
-		isPlayed = player.PlayCard(0);
-
-		std::cout << ((isPlayed) ? "Success" : "Error") << "\n";
-		std::cout << "Current mana: " << player.GetCurrentMana() << "\n";
-
-		std::cout << "--- Exiting Player local scope (Player and CardPiles destroyed - Composition) ---\n";
+		std::cout << "Card is still available: " << lockedCard->GetName() << "\n";
 	}
-
-	std::cout << "\n--- Checking Cards After Player Destruction - Aggregation ---\n";
-	std::cout << "First aggregated card: " << card1->GetName() << "\n";
-	std::cout << "Second aggregated card: " << card2->GetName() << "\n";
-
-	std::cout << "Deleting aggregated cards\n";
-	delete card1;
-	card1 = nullptr;
-
-	delete card2;
-	card2 = nullptr;
-
+	else
+	{
+		std::cout << "lock() returned an empty pointer. The Card object no longer exists.\n";
+	}
 	return 0;
 }

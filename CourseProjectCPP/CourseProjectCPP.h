@@ -9,5 +9,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <memory>
+#include <utility>
 
 // TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.
