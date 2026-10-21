@@ -38,7 +38,7 @@ private:
 public:
 	Card(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t cost, std::int32_t value);
 
-	Card()                       = delete;
+	Card()                       = default;
 	Card(const Card&)            = delete;
 	Card(Card&&)                 = delete;
 	Card& operator=(const Card&) = delete;
