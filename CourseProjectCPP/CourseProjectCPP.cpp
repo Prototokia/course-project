@@ -84,5 +84,43 @@ int main()
 	{
 		std::cout << "lock() returned an empty pointer. The Card object no longer exists.\n";
 	}
+
+	std::cout << "\n=== 5.4. Array of dynamic objects ===\n";
+
+	{
+		auto cardArray = std::make_unique<cards::Card[]>(2);
+
+		cardArray[0].SetName("Mana Blaze");
+		cardArray[0].SetValue(1);
+
+		cardArray[1].SetName("Death Ray");
+		cardArray[1].SetValue(18);
+
+		std::cout << "cardArray[0]: " << cardArray[0].GetName() << ", value = " << cardArray[0].GetValue() << "\n";
+		std::cout << "cardArray[1]: " << cardArray[1].GetName() << ", value = " << cardArray[1].GetValue() << "\n";
+
+		std::cout << "Leaving object-array scope...\n";
+	}
+
+	std::cout << "\n=== 5.5. Dynamic array of objects ===\n";
+
+	{
+		auto cardPtrArray = std::make_unique<std::unique_ptr<cards::Card>[]>(2);
+
+		cardPtrArray[0] = std::make_unique<cards::Card>("Plague", "Inflict 3 vulnerable and 3 weakness to all enemies", cards::Card::CardType::eSkill, 2, 3);
+		cardPtrArray[1] = std::make_unique<cards::Card>("Carapace", "Ignore next incoming damage once", cards::Card::CardType::eSkill, 2, 1);
+
+		std::cout << "cardPtrArray[0]: " << cardPtrArray[0]->GetName() << "\n";
+		std::cout << "cardPtrArray[1]: " << cardPtrArray[1]->GetName() << "\n";
+
+		std::cout << "Replacing card at index 0...\n";
+
+		cardPtrArray[0] = std::make_unique<cards::Card>("Ice bolt", "Deals 10 damage, inflicts freeze", cards::Card::CardType::eAttack, 1, 10);
+
+		std::cout << "New card at index 0: " << cardPtrArray[0]->GetName() << "\n";
+
+		std::cout << "Leaving pointer-array scope...\n";
+	}
+
 	return 0;
 }
