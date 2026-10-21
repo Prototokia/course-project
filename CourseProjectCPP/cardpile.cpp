@@ -5,79 +5,51 @@ namespace cards
 
 CardPile::CardPile(CardPileType cardPileType, std::int32_t capacity)
 	: m_type{ cardPileType }
-	, m_capacity{ capacity > 0 ? capacity : 1 }
 {
-	m_cards = new Card*[m_capacity];
+	m_cards.reserve(static_cast<std::size_t>(capacity > 0 ? capacity : 1));
 }
 
-void CardPile::AddCard(Card* card)
+void CardPile::AddCard(std::weak_ptr<Card> card)
 {
-	if (card == nullptr)
-	{
-		std::cout << "Cannot add null card.\n";
+	if (card.expired()) {
+		std::cout << "Cannot add null or expired card\n";
 
 		return;
 	}
 
-	if (m_count == m_capacity)
-	{
-		std::int32_t newCapacity = m_capacity * 2;
-		Card** newCards = new Card*[newCapacity];
-
-		for (int32_t i = 0; i < m_count; i++)
-		{
-			newCards[i] = m_cards[i];
-		}
-
-		delete[] m_cards;
-		m_cards = newCards;
-		m_capacity = newCapacity;
-	}
-
-	m_cards[m_count] = card;
-
-	m_count++;
+	m_cards.push_back(std::move(card));
 }
 
-Card* CardPile::RemoveCardAt(std::int32_t index)
+std::weak_ptr<Card> CardPile::RemoveCardAt(std::int32_t index)
 {
-	if (index < 0 || index >= m_count) return nullptr;
+	if (index < 0 || static_cast<std::size_t>(index) >= m_cards.size()) return {};
 
-	Card* removedCard = m_cards[index];
+	auto removedCard = std::move(m_cards[static_cast<std::size_t>(index)]);
 
-	for (int32_t i = index; i < m_count - 1; i++)
-	{
-		m_cards[i] = m_cards[i + 1];
-	}
-
-	m_count--;
-
-	m_cards[m_count] = nullptr;
+	m_cards.erase(m_cards.begin() + index);
 
 	return removedCard;
 }
 
-Card* CardPile::DrawCard()
+std::weak_ptr<Card> CardPile::DrawCard()
 {
-	if (m_count == 0)
+	if (m_cards.empty())
 	{
 		std::cout << "The card pile is empty.\n";
 
-		return nullptr;
+		return {};
 	}
 
-	m_count--;
+	auto drawCard = std::move(m_cards.back());
 
-	Card* drawCard = m_cards[m_count];
-
-	m_cards[m_count] = nullptr;
+	m_cards.pop_back();
 
 	return drawCard;
 }
 
 void CardPile::Shuffle()
 {
-	if (m_count < 2)
+	if (m_cards.size() < 2)
 	{
 		std::cout << "Not enough cards to shuffle.\n";
 		return;
@@ -86,13 +58,11 @@ void CardPile::Shuffle()
 	std::random_device rd;
 	std::mt19937 gen(rd());
 
-	std::shuffle(m_cards, m_cards + m_count, gen);
+	std::shuffle(m_cards.begin(), m_cards.end(), gen);
 }
 
 CardPile::~CardPile()
 {
-	delete[] m_cards;
-
 	std::cout << "CardPile destroyed.\n";
 }
 
