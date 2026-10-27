@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <random>
+#include <memory>
 
 namespace cards
 {
@@ -22,13 +23,7 @@ public:
 		eDraw,
 	};
 private:
-	static constexpr auto BASE_COUNT = 0;
-	static constexpr auto BASE_CAPACITY = 0;
-
-	Card** m_cards{ nullptr };
-
-	std::int32_t m_count{ BASE_COUNT };
-	std::int32_t m_capacity{ BASE_CAPACITY };
+	std::vector<std::weak_ptr<Card>> m_cards ;
 
 	CardPileType m_type{ CardPileType::eNone };
 
@@ -43,24 +38,25 @@ public:
 	~CardPile();
 
 	void Shuffle();
-	void AddCard(Card* card);
-	Card* RemoveCardAt(std::int32_t index);
-	Card* DrawCard();
+	void AddCard(std::weak_ptr<Card> card);
+	std::weak_ptr<Card> RemoveCardAt(std::int32_t index);
+	std::weak_ptr<Card> DrawCard();
 
-	[[nodiscard]] Card* GetCardAt(std::int32_t index) const
+	[[nodiscard]] std::weak_ptr<Card> GetCardAt(std::int32_t index) const
 	{
-		if (index < 0 || index >= m_count) return nullptr;
-		return m_cards[index];
+		if (index < 0 || static_cast<std::size_t>(index) >= m_cards.size()) return {};
+
+		return m_cards[static_cast<std::size_t>(index)];
 	}
 
 	[[nodiscard]] std::int32_t GetCount() const
 	{
-		return m_count;
+		return static_cast<std::int32_t>(m_cards.size());
 	}
 
 	[[nodiscard]] std::int32_t GetCapacity() const
 	{
-		return m_capacity;
+		return static_cast<std::int32_t>(m_cards.capacity());
 	}
 
 	[[nodiscard]] CardPileType GetCardPileType() const

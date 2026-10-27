@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <memory>
 
 namespace entities
 {
@@ -43,7 +44,7 @@ public:
 	void Heal(std::int32_t healAmount);
 	bool DrawCard();
 	bool PlayCard(std::int32_t cardIndex);
-	void AddCardToDeck(cards::Card* card);
+	void AddCardToDeck(const std::shared_ptr<cards::Card>& card);
 	void PrepareForCombat();
 
 	[[nodiscard]] std::int32_t GetMaxHealth() const
