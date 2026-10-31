@@ -4,123 +4,180 @@
 
 int main()
 {
-	std::cout << "=== Smart Pointers Demonstration ===\n";
-	std::cout << "\n=== 5.1. unique_ptr ===\n";
+	std::cout << "========== Inheritance Demo ==========" << "\n";
 
-	{
-		std::cout << "Local scope\n";
+	entities::Player player{ 100, 10, 0 };
 
-		auto uniqueCard = std::make_unique<cards::Card>("Mana blaze", "Gain 1 mana", cards::Card::CardType::eSkill, 0, 1);
+	auto drawSource1 = std::make_shared<cards::Card>("Card 1", "Temporary draw source", cards::Card::CardType::eSkill, 0, 0);
 
-		std::cout << "Original pointer owns: " << uniqueCard->GetName() << "\n";
+	auto drawSource2 = std::make_shared<cards::Card>("Card 2", "Temporary draw source", cards::Card::CardType::eSkill, 0, 0);
 
-		auto transferedCard = std::move(uniqueCard);
-
-		std::cout << "Original pointer is: " << (uniqueCard ? "not null" : "null") << "\n";
-
-		std::cout << "New owner owns: " << transferedCard->GetName() << "\n";
-
-		std::cout << "Leaving local scope...\n";
-	}
-
-	std::cout << "\n=== 5.2. shared_ptr ===\n";
-
-	auto sharedCard = std::make_shared<cards::Card>("Fireball", "Deals 12 damage", cards::Card::CardType::eAttack, 1, 12);
-
-	std::cout << "Initial use_count: " << sharedCard.use_count() << "\n";
-
-	{
-		auto sharedCopy = sharedCard;
-
-		std::cout << "After copying use_count: " << sharedCard.use_count() << "\n";
-
-		std::cout << "Copy accesses card: " << sharedCopy->GetName() << "\n";
-
-		std::cout << "Leaving local scope...\n";
-	}
-
-	std::cout << "After sharedCopy destruction use_count: " << sharedCard.use_count() << "\n";
-
-	std::cout << "Resetting the last shared_ptr...\n";
-	sharedCard.reset();
-
-	std::cout << "use_count after reset: " << sharedCard.use_count() << "\n";
+	player.AddCardToDeck(drawSource1);
+	player.AddCardToDeck(drawSource2);
 	
-	std::cout << "\n=== 5.3. weak_ptr ===\n";
-
-	std::weak_ptr<cards::Card> weakCard;
+	player.PrepareForCombat();
 
 	{
-		auto strongOwner = std::make_shared<cards::Card>("Ice bolt", "Deals 10 damage", cards::Card::CardType::eAttack, 1, 10);
+		std::cout << "\n===== 1. Creating cards =====\n";
 
-		weakCard = strongOwner;
-
-		std::cout << "Created weak_ptr. Object expired: " << (weakCard.expired() ? "yes" : "no") << "\n";
-
-		std::cout << "use_count after creating weak_ptr: " << strongOwner.use_count() << "\n";
-
+		std::unique_ptr<cards::BaseCard> cardArray[] =
 		{
-			auto lockedCard = weakCard.lock();
+			std::make_unique<cards::ManaRayCard>(),
+			std::make_unique<cards::BarrierCard>(),
+			std::make_unique<cards::MagicIntuitionCard>()
+		};
 
-			std::cout << "lock() succeeded. Card name: " << lockedCard->GetName() << "\n";
+		std::cout << "\n===== 2. Describe =====\n";
 
-			std::cout << "use_count while locked: " << strongOwner.use_count() << "\n";
-
-			std::cout << "Leaving lockedCard scope...\n";
+		for (const auto& card : cardArray)
+		{
+			std::cout << card->Describe() << "\n\n";
 		}
 
-		std::cout << "use_count after lock scope: " << strongOwner.use_count() << "\n";
-		
-		std::cout << "Leaving strong owner's scope...\n";
+		std::cout << "\n===== 3. String operations =====\n";
+
+		StringOperationsDemo(*cardArray[0]);
+
+		std::cout << "\n===== 4. This demonstration =====\n";
+
+		cards::CardReceiver receiver;
+
+		cardArray[1]->SendTo(receiver);
+
+		std::cout << "\n===== 5. Upgrade =====\n";
+
+		for (auto& card : cardArray)
+		{
+			card->Upgrade();
+		}
+
+		std::cout << "\n===== 6. Updated descriptions =====\n";
+
+		for (const auto& card : cardArray)
+		{
+			std::cout << card->Describe() << "\n\n";
+		}
+
+		std::cout << "\n===== 7. Play cards =====\n";
+
+		for (const auto& card : cardArray)
+		{
+			card->Play(player);
+		}
+
+		std::cout << "\nRemaining mana: " << player.GetCurrentMana() << '\n';
+
+		std::cout << "\n===== 8. Cloning =====\n";
+
+		std::unique_ptr<cards::BaseCard> clonedCards[] =
+		{
+			cardArray[0]->Clone(),
+			cardArray[1]->Clone(),
+			cardArray[2]->Clone()
+		};
+
+		for (const auto& card : clonedCards)
+		{
+			std::cout << card->Describe() << "\n\n";
+		}
+
+		std::cout << "\n===== 9. Static members =====\n";
+
+		std::cout << "Created BaseCard objects: " << cards::BaseCard::GetCreatedCount() << '\n';
+
+		std::cout << "\n===== 10. Virtual destructor =====\n";
+
+		cardArray[0].reset();
+
+		std::cout << "\nLeaving card array scope...\n";
 	}
 
-	std::cout << "After owner destruction, object expired: " << (weakCard.expired() ? "yes" : "no") << "\n";
+	std::cout << "\n========== Constructors Demo ==========\n";
 
-	if (auto lockedCard = weakCard.lock())
 	{
-		std::cout << "Card is still available: " << lockedCard->GetName() << "\n";
+		cards::ManaRayCard original{ 2 };
+
+		cards::ManaRayCard copied{ original };
+
+		cards::ManaRayCard moved{ std::move(copied) };
+
+		cards::ManaRayCard assigned;
+
+		assigned = original;
+		assigned = std::move(moved);
+		assigned = assigned;     
 	}
-	else
+
+	std::cout << "\n========== Shallow copy ==========\n";
 	{
-		std::cout << "lock() returned an empty pointer. The Card object no longer exists.\n";
+		cards::ManaRayCard original;
+
+		original.ShareMetadata()->flavorText = "A powerful beam of mana";
+
+		auto shallowCopy = original.ShareMetadata();
+
+		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
+
+		std::cout << "Shallow copy: " << shallowCopy->flavorText << '\n';
+
+		std::cout << "Shared pointers count: " << shallowCopy.use_count() << '\n';
+
+		shallowCopy->flavorText = "Changed through shallow copy";
+
+		std::cout << "\nAfter modification:\n";
+
+		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
+
+		std::cout << "Shallow copy: " << shallowCopy->flavorText << '\n';
 	}
-
-	std::cout << "\n=== 5.4. Array of dynamic objects ===\n";
-
+	std::cout << "\n========== Deep copy ==========\n";
 	{
-		auto cardArray = std::make_unique<cards::Card[]>(2);
+		cards::ManaRayCard original;
 
-		cardArray[0].SetName("Mana Blaze");
-		cardArray[0].SetValue(1);
+		original.ShareMetadata()->flavorText = "Original metadata";
 
-		cardArray[1].SetName("Death Ray");
-		cardArray[1].SetValue(18);
+		std::unique_ptr<cards::BaseCard> deepCopy = original.Clone();
 
-		std::cout << "cardArray[0]: " << cardArray[0].GetName() << ", value = " << cardArray[0].GetValue() << "\n";
-		std::cout << "cardArray[1]: " << cardArray[1].GetName() << ", value = " << cardArray[1].GetValue() << "\n";
+		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
 
-		std::cout << "Leaving object-array scope...\n";
+		std::cout << "Deep copy: " << deepCopy->ShareMetadata()->flavorText << '\n';
+
+		deepCopy->ShareMetadata()->flavorText = "Changed through deep copy";
+
+		std::cout << "\nAfter modification:\n";
+
+		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
+
+		std::cout << "Deep copy: " << deepCopy->ShareMetadata()->flavorText << '\n';
 	}
-
-	std::cout << "\n=== 5.5. Dynamic array of objects ===\n";
-
-	{
-		auto cardPtrArray = std::make_unique<std::unique_ptr<cards::Card>[]>(2);
-
-		cardPtrArray[0] = std::make_unique<cards::Card>("Plague", "Inflict 3 vulnerable and 3 weakness to all enemies", cards::Card::CardType::eSkill, 2, 3);
-		cardPtrArray[1] = std::make_unique<cards::Card>("Carapace", "Ignore next incoming damage once", cards::Card::CardType::eSkill, 2, 1);
-
-		std::cout << "cardPtrArray[0]: " << cardPtrArray[0]->GetName() << "\n";
-		std::cout << "cardPtrArray[1]: " << cardPtrArray[1]->GetName() << "\n";
-
-		std::cout << "Replacing card at index 0...\n";
-
-		cardPtrArray[0] = std::make_unique<cards::Card>("Ice bolt", "Deals 10 damage, inflicts freeze", cards::Card::CardType::eAttack, 1, 10);
-
-		std::cout << "New card at index 0: " << cardPtrArray[0]->GetName() << "\n";
-
-		std::cout << "Leaving pointer-array scope...\n";
-	}
-
 	return 0;
+}
+
+void StringOperationsDemo(const cards::BaseCard& card)
+{
+	std::string name{ card.GetName() };
+
+	std::cout << "1. Concatenation\n";
+
+	std::string label = "Selected card " + name;
+	std::cout << label << "\n";
+
+	std::cout << "2. Substring find\n";
+
+	std::size_t position = name.find("Ray");
+
+	if (position != std::string::npos)
+	{
+		std::cout << "3. Substring extraction\n";
+
+		std::string substring = name.substr(position, 3);
+		std::cout << "Found substring: " << substring << "\n";
+	}
+
+	std::cout << "4. String comparison\n";
+
+	if (name == "Mana Ray")
+	{
+		std::cout << "This is Mana Ray!\n";
+	}
 }
