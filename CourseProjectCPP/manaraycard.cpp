@@ -9,7 +9,7 @@ namespace cards
 {
 
 ManaRayCard::ManaRayCard()
-	: ManaRayCard{ 1 }
+	: BaseCard{ "Mana Ray", "Deals 5 damage", CardType::eAttack, 1, 5 }
 {
 	std::cout << "[ManaRayCard] default-constructed\n";
 }
