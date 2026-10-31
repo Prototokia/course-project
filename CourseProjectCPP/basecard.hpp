@@ -47,9 +47,6 @@ public:
 	bool Play(entities::Player& player);
 	bool Upgrade();
 
-	virtual bool ApplyEffect(entities::Player& player) = 0;
-    virtual bool ApplyUpgrade() = 0;
-
 	virtual std::unique_ptr<BaseCard> Clone() const = 0;
 	virtual std::string Describe() const;
 
@@ -113,6 +110,9 @@ protected:
     BaseCard(BaseCard&& other) noexcept;
     BaseCard& operator=(const BaseCard& other);
     BaseCard& operator=(BaseCard&& other) noexcept;
+
+    virtual bool ApplyEffect(entities::Player& player) = 0;
+    virtual bool ApplyUpgrade() = 0;
 
     std::string Header() const;
 
