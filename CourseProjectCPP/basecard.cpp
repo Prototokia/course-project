@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <utility>
+#include <memory>
 
 namespace cards
 {
@@ -31,6 +32,7 @@ BaseCard::BaseCard(const BaseCard& other)
     , m_manaCost{ other.m_manaCost }
     , m_value{ other.m_value }
     , m_isUpgraded{ other.m_isUpgraded }
+    , m_metadata{ other.m_metadata ? std::make_shared<CardMetadata>(*other.m_metadata) : nullptr }
 {
     m_createdCount++;
     std::cout << "[BaseCard] copy-constructed: " << m_name << '\n';
@@ -43,6 +45,7 @@ BaseCard::BaseCard(BaseCard&& other) noexcept
     , m_manaCost{ other.m_manaCost }
     , m_value{ other.m_value }
     , m_isUpgraded{ other.m_isUpgraded }
+    , m_metadata{ std::move(other.m_metadata) }
 {
     m_createdCount++;
     std::cout << "[BaseCard] move-constructed: " << m_name << '\n';
@@ -62,6 +65,8 @@ BaseCard& BaseCard::operator=(const BaseCard& other)
     m_value = other.m_value;
     m_isUpgraded = other.m_isUpgraded;
 
+    m_metadata = other.m_metadata ? std::make_shared<CardMetadata>(*other.m_metadata) : nullptr;
+
     return *this;
 }
 
@@ -78,6 +83,8 @@ BaseCard& BaseCard::operator=(BaseCard&& other) noexcept
     m_manaCost = other.m_manaCost;
     m_value = other.m_value;
     m_isUpgraded = other.m_isUpgraded;
+
+    m_metadata = std::move(other.m_metadata);
 
     return *this;
 }
@@ -144,6 +151,16 @@ std::string BaseCard::Describe() const
         + "\nType: " + std::to_string(static_cast<int>(m_cardType)) 
         + "\nValue: "  + std::to_string(m_value) 
         + "\nUpgraded: " + (m_isUpgraded ? "yes" : "no");
+}
+
+void BaseCard::SendTo(CardReceiver& receiver) const
+{
+    receiver.Receive(*this);
+}
+
+void CardReceiver::Receive(const BaseCard& card) const
+{
+    std::cout << "[CardReceiver] Received card: " << card.GetName() << '\n';
 }
 
 }

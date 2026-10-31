@@ -9,9 +9,21 @@ namespace entities
 {
 	class Player;
 }
-
 namespace cards
 {
+
+struct CardMetadata
+{
+    std::string flavorText;
+};
+
+class BaseCard;
+
+class CardReceiver
+{
+public:
+    void Receive(const BaseCard& card) const;
+};
 
 class BaseCard
 {
@@ -39,6 +51,7 @@ private:
 	std::int32_t m_value{ BASE_VALUE };
 	bool m_isUpgraded{ false };
 
+    std::shared_ptr<CardMetadata> m_metadata{ std::make_shared<CardMetadata>() };
 public:
 	BaseCard(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t cost, std::int32_t value);
 	BaseCard();
@@ -49,6 +62,8 @@ public:
 
 	virtual std::unique_ptr<BaseCard> Clone() const = 0;
 	virtual std::string Describe() const;
+
+    void SendTo(CardReceiver& receiver) const;
 
     [[nodiscard]] static std::int32_t GetCreatedCount()
     {
@@ -80,6 +95,11 @@ public:
         return m_value;
     }
 
+    [[nodiscard]] std::shared_ptr<CardMetadata> ShareMetadata() const
+    {
+        return m_metadata;
+    }
+
     void SetName(std::string_view name)
     {
         m_name = name;
@@ -105,6 +125,8 @@ public:
         m_value = value;
     }
 
+
+
 protected:
     BaseCard(const BaseCard& other);
     BaseCard(BaseCard&& other) noexcept;
@@ -120,4 +142,5 @@ protected:
         return m_isUpgraded;
     }
 };
+
 }
