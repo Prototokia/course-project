@@ -90,21 +90,11 @@ std::unique_ptr<BaseCard> BarrierCard::Clone() const
 
 std::string BarrierCard::Describe() const
 {
-	std::string description{ GetName() };
-
-	description += "\nAbility: ";
-	description += GetTextAbility();
-
-	description += "\nType: ";
-	description += std::to_string(static_cast<int>(GetCardType()));
-
-	description += "\nMana cost: ";
-	description += std::to_string(GetCost());
-
-	description += "\nEffect: Grants ";
-	description += std::to_string(GetValue());
-	description += " defense.";
-
-	return description;
+	return Header()
+		+ "\nAbility: " + std::string(GetTextAbility())
+		+ "\nEffect: Grants "
+		+ std::to_string(GetValue())
+		+ " block.";
 }
+
 }
