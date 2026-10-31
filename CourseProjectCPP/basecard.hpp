@@ -21,7 +21,7 @@ public:
 		eNone,
 		eAttack,
 		eSkill,
-		eEffect,
+		eTalent,
 	};
 
 private:
