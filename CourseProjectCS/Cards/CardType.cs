@@ -3,6 +3,6 @@
         None,
         Attack,
         Skill,
-        Effect
+        Talent
     }
 }
