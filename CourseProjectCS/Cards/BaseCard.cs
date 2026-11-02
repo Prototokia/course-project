@@ -10,6 +10,12 @@ namespace CourseProjectCS.Cards {
             get { return _createdCount; }
             private set { _createdCount = value; }
         }
+
+        private CardMetadata _metadata = new CardMetadata();
+        public string FlavorText {
+            get { return _metadata.FlavorText; }
+            set { _metadata.FlavorText = value; }
+        }
         private bool _isUpgraded;
         public string Name { get; private set; } = string.Empty;
         public string TextAbility { get; protected set; } = string.Empty;
@@ -43,6 +49,7 @@ namespace CourseProjectCS.Cards {
             Cost = other.Cost;
             Value = other.Value;
             _isUpgraded = other._isUpgraded;
+            _metadata = new CardMetadata(other._metadata);
 
             CreatedCount++;
 
@@ -125,6 +132,11 @@ namespace CourseProjectCS.Cards {
 
         public override int GetHashCode() {
             return HashCode.Combine(GetType(), Name);
+        }
+
+        public BaseCard ShallowCopy() {
+            CreatedCount++;
+            return (BaseCard)MemberwiseClone();
         }
     }
 }
