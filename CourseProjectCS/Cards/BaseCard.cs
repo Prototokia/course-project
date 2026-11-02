@@ -112,6 +112,6 @@ namespace CourseProjectCS.Cards {
         public virtual string Describe() {
             return Header() + $"\nСпособность: {TextAbility}" + $"\nТип: {Type}" + $"\nЗначение: {Value}" + $"\nУлучшена: {(_isUpgraded ? "да" : "нет")}";
         }
-        
+
     }
 }
