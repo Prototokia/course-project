@@ -113,5 +113,18 @@ namespace CourseProjectCS.Cards {
             return Header() + $"\nСпособность: {TextAbility}" + $"\nТип: {Type}" + $"\nЗначение: {Value}" + $"\nУлучшена: {(_isUpgraded ? "да" : "нет")}";
         }
 
+        public override bool Equals(object? obj) {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (obj is not BaseCard other)
+                return false;
+
+            return GetType() == other.GetType() && Name == other.Name;
+        }
+
+        public override int GetHashCode() {
+            return HashCode.Combine(GetType(), Name);
+        }
     }
 }
