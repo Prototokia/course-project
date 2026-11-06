@@ -111,5 +111,22 @@ namespace CourseProjectCS.Entities {
                 _draw.AddCard(_deck[i]);
             }
         }
+        public bool TrySpendMana(int amount) {
+            if (amount < 0)
+                return false;
+
+            if (CurrentMana < amount)
+                return false;
+
+            CurrentMana -= amount;
+            return true;
+        }
+
+        public void GainMana(int amount) {
+            if (amount < 0)
+                return;
+
+            CurrentMana = Math.Min(MaxMana, CurrentMana + amount);
+        }
     }
 }
