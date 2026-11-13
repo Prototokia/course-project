@@ -12,7 +12,7 @@ endif()
 project ("CourseProjectCPP")
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h" "card.cpp" "card.hpp" "cardpile.cpp" "cardpile.hpp" "player.cpp" "player.hpp" "basecard.cpp" "basecard.hpp" "barriercard.cpp" "barriercard.hpp" "magicintuitioncard.cpp" "magicintuitioncard.hpp" "manaraycard.cpp" "manaraycard.hpp")
+add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h" "card.cpp" "card.hpp" "cardpile.cpp" "cardpile.hpp" "player.cpp" "player.hpp" "basecard.cpp" "basecard.hpp" "barriercard.cpp" "barriercard.hpp" "magicintuitioncard.cpp" "magicintuitioncard.hpp" "manaraycard.cpp" "manaraycard.hpp" "enhancedhealingpolicy.cpp" "enhancedhealingpolicy.hpp" "fireballcard.cpp" "fireballcard.hpp" "gameruleexceptions.hpp" "idamagedealer.hpp" "ihealingpolicy.hpp" "itarget.hpp" "standardhealingpolicy.cpp" "standardhealingpolicy.hpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CourseProjectCPP PROPERTY CXX_STANDARD 20)

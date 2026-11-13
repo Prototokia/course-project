@@ -10,12 +10,16 @@
 #include "manaraycard.hpp"
 #include "barriercard.hpp"
 #include "magicintuitioncard.hpp"
+#include "fireballcard.hpp"
+#include "enhancedhealingpolicy.hpp"
+#include "gameruleexceptions.hpp"
+#include "idamagedealer.hpp"
+#include "itarget.hpp"
 
+#include <exception>
 #include <iostream>
 #include <cstdint>
 #include <memory>
 #include <utility>
-
-void StringOperationsDemo(const cards::BaseCard& card);
 
 // TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.
