@@ -2,6 +2,8 @@
 
 #include "cardpile.hpp"
 #include "itarget.hpp"
+#include "ihealingpolicy.hpp"
+#include "standardhealingpolicy.hpp"
 
 #include <iostream>
 #include <cstdint>
@@ -30,6 +32,8 @@ private:
 	cards::CardPile m_hand{ cards::CardPile::CardPileType::eHand, BASE_CAPACITY };
 	cards::CardPile m_discard{ cards::CardPile::CardPileType::eDiscard, BASE_CAPACITY };
 	cards::CardPile m_draw{ cards::CardPile::CardPileType::eDraw, BASE_CAPACITY };
+
+	std::unique_ptr<IHealingPolicy> m_healingPolicy;
 
 public:
 	Player(std::int32_t health, std::int32_t mana, std::int32_t coins);
@@ -96,6 +100,13 @@ public:
 	void SetCoins(std::int32_t amount)
 	{
 		m_coins = amount;
+	}
+
+	void SetHealingPolicy(std::unique_ptr<IHealingPolicy> policy)
+	{
+		if (!policy) return;
+
+		m_healingPolicy = std::move(policy);
 	}
 };
 

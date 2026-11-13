@@ -9,6 +9,7 @@ Player::Player(std::int32_t health, std::int32_t mana, std::int32_t coins)
 	, m_coins{ coins }
 	, m_currentHealth{ health }
 	, m_currentMana{ mana }
+	, m_healingPolicy{std::make_unique<StandardHealingPolicy>()}
 {}
 
 
@@ -38,14 +39,8 @@ void Player::Heal(std::int32_t healAmount)
 
 		return;
 	}
-	if (m_currentHealth + healAmount > m_maxHealth)
-	{
-		m_currentHealth = m_maxHealth;
-	}
-	else
-	{
-		m_currentHealth += healAmount;
-	}
+	
+	m_currentHealth = m_healingPolicy->CalculateNewHealth(m_currentHealth, m_maxHealth, healAmount);
 }
 
 bool Player::DrawCard()
