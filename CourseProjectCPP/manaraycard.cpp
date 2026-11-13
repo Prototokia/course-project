@@ -96,4 +96,9 @@ std::string ManaRayCard::Describe() const
 		+ " damage.";
 }
 
+void ManaRayCard::DealDamage(combat::ITarget& target)
+{
+	target.TakeDamage(GetValue());
+}
+
 }

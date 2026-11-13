@@ -1,11 +1,13 @@
 #pragma once
 
 #include "basecard.hpp"
+#include "itarget.hpp"
+#include "idamagedealer.hpp"
 
 namespace cards
 {
 
-class ManaRayCard final : public BaseCard
+class ManaRayCard final : public BaseCard, public combat::IDamageDealer
 {
 public:
 	ManaRayCard();
@@ -21,6 +23,8 @@ public:
 
 	std::unique_ptr<BaseCard> Clone() const override;
 	std::string Describe() const override;
+
+	void DealDamage(combat::ITarget& target) override;
 
 private:
 	bool ApplyEffect(entities::Player& player) override;
