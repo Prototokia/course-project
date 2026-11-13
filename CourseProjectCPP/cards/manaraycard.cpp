@@ -56,7 +56,7 @@ ManaRayCard& ManaRayCard::operator=(ManaRayCard&& other) noexcept
 	return *this;
 }
 
-ManaRayCard::~ManaRayCard()
+ManaRayCard::~ManaRayCard() noexcept
 {
 	std::cout << "[ManaRayCard] destroyed\n";
 }
@@ -94,6 +94,16 @@ std::string ManaRayCard::Describe() const
 		+ "\nEffect: Deals "
 		+ std::to_string(GetValue())
 		+ " damage.";
+}
+
+void ManaRayCard::DealDamage(combat::ITarget& target)
+{
+	target.TakeDamage(GetValue());
+}
+
+std::string_view ManaRayCard::GetKind() const
+{
+	return "ManaRayCard";
 }
 
 }

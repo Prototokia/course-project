@@ -9,7 +9,7 @@ CardPile::CardPile(CardPileType cardPileType, std::int32_t capacity)
 	m_cards.reserve(static_cast<std::size_t>(capacity > 0 ? capacity : 1));
 }
 
-void CardPile::AddCard(std::weak_ptr<Card> card)
+void CardPile::AddCard(std::weak_ptr<BaseCard> card)
 {
 	if (card.expired()) {
 		std::cout << "Cannot add null or expired card\n";
@@ -20,7 +20,7 @@ void CardPile::AddCard(std::weak_ptr<Card> card)
 	m_cards.push_back(std::move(card));
 }
 
-std::weak_ptr<Card> CardPile::RemoveCardAt(std::int32_t index)
+std::weak_ptr<BaseCard> CardPile::RemoveCardAt(std::int32_t index)
 {
 	if (index < 0 || static_cast<std::size_t>(index) >= m_cards.size()) return {};
 
@@ -31,7 +31,7 @@ std::weak_ptr<Card> CardPile::RemoveCardAt(std::int32_t index)
 	return removedCard;
 }
 
-std::weak_ptr<Card> CardPile::DrawCard()
+std::weak_ptr<BaseCard> CardPile::DrawCard()
 {
 	if (m_cards.empty())
 	{

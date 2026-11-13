@@ -1,5 +1,6 @@
 #include "basecard.hpp"
-#include "player.hpp"
+#include "entities/player.hpp"
+#include "exceptions/gameruleexceptions.hpp"
 
 #include <iostream>
 #include <utility>
@@ -89,7 +90,7 @@ BaseCard& BaseCard::operator=(BaseCard&& other) noexcept
     return *this;
 }
 
-BaseCard::~BaseCard()
+BaseCard::~BaseCard() noexcept
 {
     std::cout << "[BaseCard] destroyed: " << m_name << '\n';
 }
@@ -124,8 +125,7 @@ bool BaseCard::Upgrade()
 {
     if (m_isUpgraded)
     {
-        std::cout << "The card has already been upgraded.\n";
-        return false;
+        throw game::CardAlreadyUpgraded{ GetName() };
     }
 
     if (!ApplyUpgrade())
@@ -161,6 +161,11 @@ void BaseCard::SendTo(CardReceiver& receiver) const
 void CardReceiver::Receive(const BaseCard& card) const
 {
     std::cout << "[CardReceiver] Received card: " << card.GetName() << '\n';
+}
+
+std::string_view BaseCard::GetKind() const
+{
+    return "BaseCard";
 }
 
 }

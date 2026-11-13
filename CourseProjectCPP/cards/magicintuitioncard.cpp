@@ -1,5 +1,5 @@
 #include "magicintuitioncard.hpp"
-#include "player.hpp"
+#include "entities/player.hpp"
 
 #include <iostream>
 #include <memory>
@@ -58,7 +58,7 @@ MagicIntuitionCard& MagicIntuitionCard::operator=(
     return *this;
 }
 
-MagicIntuitionCard::~MagicIntuitionCard()
+MagicIntuitionCard::~MagicIntuitionCard() noexcept
 {
     std::cout << "[MagicIntuitionCard] destroyed\n";
 }
