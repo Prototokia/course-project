@@ -163,4 +163,9 @@ void CardReceiver::Receive(const BaseCard& card) const
     std::cout << "[CardReceiver] Received card: " << card.GetName() << '\n';
 }
 
+std::string_view BaseCard::GetKind() const
+{
+    return "BaseCard";
+}
+
 }

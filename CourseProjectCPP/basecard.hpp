@@ -65,6 +65,8 @@ public:
 
     void SendTo(CardReceiver& receiver) const;
 
+    std::string_view GetKind() const;
+
     [[nodiscard]] static std::int32_t GetCreatedCount()
     {
         return m_createdCount;
@@ -124,8 +126,6 @@ public:
     {
         m_value = value;
     }
-
-
 
 protected:
     BaseCard(const BaseCard& other);

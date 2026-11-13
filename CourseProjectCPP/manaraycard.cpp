@@ -101,4 +101,9 @@ void ManaRayCard::DealDamage(combat::ITarget& target)
 	target.TakeDamage(GetValue());
 }
 
+std::string_view ManaRayCard::GetKind() const
+{
+	return "ManaRayCard";
+}
+
 }

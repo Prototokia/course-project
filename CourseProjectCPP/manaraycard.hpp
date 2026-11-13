@@ -26,6 +26,8 @@ public:
 
 	void DealDamage(combat::ITarget& target) override;
 
+	std::string_view GetKind() const;
+
 private:
 	bool ApplyEffect(entities::Player& player) override;
 	bool ApplyUpgrade() override;
