@@ -56,7 +56,7 @@ ManaRayCard& ManaRayCard::operator=(ManaRayCard&& other) noexcept
 	return *this;
 }
 
-ManaRayCard::~ManaRayCard()
+ManaRayCard::~ManaRayCard() noexcept
 {
 	std::cout << "[ManaRayCard] destroyed\n";
 }

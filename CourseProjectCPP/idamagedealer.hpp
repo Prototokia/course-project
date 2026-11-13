@@ -7,7 +7,7 @@ namespace combat
 class IDamageDealer
 {
 public:
-	virtual ~IDamageDealer() = default;
+	virtual ~IDamageDealer() noexcept = default;
 
 	virtual void DealDamage(ITarget& target) = 0;
 };

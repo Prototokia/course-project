@@ -17,7 +17,7 @@ public:
 	BarrierCard& operator=(const BarrierCard& other);
 	BarrierCard& operator=(BarrierCard&& other) noexcept;
 
-	~BarrierCard() override;
+	~BarrierCard() noexcept override;
 
 	std::unique_ptr<BaseCard> Clone() const override;
 	std::string Describe() const override;

@@ -19,7 +19,7 @@ public:
 	FireballCard& operator=(const FireballCard& other);
 	FireballCard& operator=(FireballCard&& other) noexcept;
 
-	~FireballCard() override;
+	~FireballCard() noexcept override;
 
 	std::unique_ptr<BaseCard> Clone() const override;
 	std::string Describe() const override;

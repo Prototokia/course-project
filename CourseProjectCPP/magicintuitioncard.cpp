@@ -58,7 +58,7 @@ MagicIntuitionCard& MagicIntuitionCard::operator=(
     return *this;
 }
 
-MagicIntuitionCard::~MagicIntuitionCard()
+MagicIntuitionCard::~MagicIntuitionCard() noexcept
 {
     std::cout << "[MagicIntuitionCard] destroyed\n";
 }

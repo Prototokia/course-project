@@ -55,7 +55,7 @@ private:
 public:
 	BaseCard(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t cost, std::int32_t value);
 	BaseCard();
-	virtual ~BaseCard();
+	virtual ~BaseCard() noexcept;
 
 	bool Play(entities::Player& player);
 	bool Upgrade();

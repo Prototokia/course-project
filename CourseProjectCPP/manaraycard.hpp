@@ -19,7 +19,7 @@ public:
 	ManaRayCard& operator=(const ManaRayCard& other);
 	ManaRayCard& operator=(ManaRayCard&& other) noexcept;
 
-	~ManaRayCard() override;
+	~ManaRayCard() noexcept override;
 
 	std::unique_ptr<BaseCard> Clone() const override;
 	std::string Describe() const override;
