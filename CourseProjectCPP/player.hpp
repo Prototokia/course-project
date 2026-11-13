@@ -3,7 +3,6 @@
 #include "cardpile.hpp"
 #include "itarget.hpp"
 #include "ihealingpolicy.hpp"
-#include "standardhealingpolicy.hpp"
 
 #include <iostream>
 #include <cstdint>

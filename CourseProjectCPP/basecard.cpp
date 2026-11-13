@@ -1,5 +1,6 @@
 #include "basecard.hpp"
 #include "player.hpp"
+#include "gameruleexceptions.hpp"
 
 #include <iostream>
 #include <utility>
@@ -124,8 +125,7 @@ bool BaseCard::Upgrade()
 {
     if (m_isUpgraded)
     {
-        std::cout << "The card has already been upgraded.\n";
-        return false;
+        throw game::CardAlreadyUpgraded{ GetName() };
     }
 
     if (!ApplyUpgrade())

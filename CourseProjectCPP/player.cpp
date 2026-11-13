@@ -1,4 +1,6 @@
 #include "player.hpp"
+#include "standardhealingpolicy.hpp"
+#include "gameruleexceptions.hpp"
 
 namespace entities
 {
@@ -17,9 +19,7 @@ void Player::TakeDamage(std::int32_t damageAmount)
 {
 	if (damageAmount < 0)
 	{
-		std::cout << "Damage amount must be positive.\n";
-
-		return;
+		throw game::InvalidAmount{ "Damage", damageAmount };
 	}
 	if (m_currentHealth - damageAmount < 0)
 	{
@@ -35,9 +35,7 @@ void Player::Heal(std::int32_t healAmount)
 {
 	if (healAmount < 0)
 	{
-		std::cout << "Heal amount must be positive.\n";
-
-		return;
+		throw game::InvalidAmount{ "Healing", healAmount };
 	}
 	
 	m_currentHealth = m_healingPolicy->CalculateNewHealth(m_currentHealth, m_maxHealth, healAmount);
