@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cardpile.hpp"
+#include "itarget.hpp"
 
 #include <iostream>
 #include <cstdint>
@@ -9,7 +10,7 @@
 namespace entities
 {
 
-class Player
+class Player : public combat::ITarget
 {
 
 private:
@@ -38,9 +39,9 @@ public:
 	Player(Player&&)                 = delete;
 	Player& operator=(const Player&) = delete;
 	Player& operator=(Player&&)      = delete;
-	~Player();
+	~Player() noexcept override;
 
-	void TakeDamage(std::int32_t damageAmount);
+	void TakeDamage(std::int32_t damageAmount) override;
 	void Heal(std::int32_t healAmount);
 	bool DrawCard();
 	bool PlayCard(std::int32_t cardIndex);

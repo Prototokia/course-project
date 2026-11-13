@@ -153,7 +153,7 @@ void Player::PrepareForCombat()
 	}
 }
 
-Player::~Player()
+Player::~Player() noexcept
 {
 	std::cout << "Player destroyed.\n";
 }
