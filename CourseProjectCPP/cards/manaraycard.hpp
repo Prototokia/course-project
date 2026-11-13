@@ -1,8 +1,8 @@
 #pragma once
 
 #include "basecard.hpp"
-#include "itarget.hpp"
-#include "idamagedealer.hpp"
+#include "combat/itarget.hpp"
+#include "combat/idamagedealer.hpp"
 
 namespace cards
 {

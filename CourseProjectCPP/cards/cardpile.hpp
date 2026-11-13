@@ -1,6 +1,6 @@
 #pragma once
 
-#include "card.hpp"
+#include "basecard.hpp"
 
 #include <iostream>
 #include <cstdint>
@@ -23,7 +23,7 @@ public:
 		eDraw,
 	};
 private:
-	std::vector<std::weak_ptr<Card>> m_cards ;
+	std::vector<std::weak_ptr<BaseCard>> m_cards ;
 
 	CardPileType m_type{ CardPileType::eNone };
 
@@ -35,14 +35,14 @@ public:
 	CardPile(CardPile&&)                 = delete;
 	CardPile& operator=(const CardPile&) = delete;
 	CardPile& operator=(CardPile&&)      = delete;
-	~CardPile();
+	~CardPile() noexcept;
 
 	void Shuffle();
-	void AddCard(std::weak_ptr<Card> card);
-	std::weak_ptr<Card> RemoveCardAt(std::int32_t index);
-	std::weak_ptr<Card> DrawCard();
+	void AddCard(std::weak_ptr<BaseCard> card);
+	std::weak_ptr<BaseCard> RemoveCardAt(std::int32_t index);
+	std::weak_ptr<BaseCard> DrawCard();
 
-	[[nodiscard]] std::weak_ptr<Card> GetCardAt(std::int32_t index) const
+	[[nodiscard]] std::weak_ptr<BaseCard> GetCardAt(std::int32_t index) const
 	{
 		if (index < 0 || static_cast<std::size_t>(index) >= m_cards.size()) return {};
 

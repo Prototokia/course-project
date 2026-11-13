@@ -1,6 +1,6 @@
 #include "basecard.hpp"
-#include "player.hpp"
-#include "gameruleexceptions.hpp"
+#include "entities/player.hpp"
+#include "exceptions/gameruleexceptions.hpp"
 
 #include <iostream>
 #include <utility>

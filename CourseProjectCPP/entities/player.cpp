@@ -1,6 +1,6 @@
 #include "player.hpp"
-#include "standardhealingpolicy.hpp"
-#include "gameruleexceptions.hpp"
+#include "policies/standardhealingpolicy.hpp"
+#include "exceptions/gameruleexceptions.hpp"
 
 namespace entities
 {
@@ -110,7 +110,7 @@ bool Player::PlayCard(std::int32_t cardIndex)
 
 		return false;
 	}
-	if (!cardToPlay->Play(m_currentMana))
+	if (!cardToPlay->Play(*this))
 	{
 		return false;
 	}
@@ -121,14 +121,14 @@ bool Player::PlayCard(std::int32_t cardIndex)
 	return true;
 }
 
-void Player::AddCardToDeck(const std::shared_ptr<cards::Card>& card)
+void Player::AddCardToDeck(const std::shared_ptr<cards::BaseCard>& card)
 {
 	if (!card)
 	{
 		return;
 	}
 
-	m_deck.AddCard(std::weak_ptr<cards::Card>{ card });;
+	m_deck.AddCard(std::weak_ptr<cards::BaseCard>{ card });;
 }
 
 void Player::PrepareForCombat()
@@ -142,7 +142,7 @@ void Player::PrepareForCombat()
 			continue;
 		}
 
-		m_draw.AddCard(std::weak_ptr<cards::Card>{ card });
+		m_draw.AddCard(std::weak_ptr<cards::BaseCard>{ card });
 	}
 }
 

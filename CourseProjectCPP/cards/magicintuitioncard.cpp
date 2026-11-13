@@ -1,5 +1,5 @@
 #include "magicintuitioncard.hpp"
-#include "player.hpp"
+#include "entities/player.hpp"
 
 #include <iostream>
 #include <memory>

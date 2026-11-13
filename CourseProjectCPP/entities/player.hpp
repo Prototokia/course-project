@@ -1,8 +1,9 @@
 #pragma once
 
-#include "cardpile.hpp"
-#include "itarget.hpp"
-#include "ihealingpolicy.hpp"
+#include "cards/cardpile.hpp"
+#include "combat/itarget.hpp"
+#include "policies/ihealingpolicy.hpp"
+#include "cards/basecard.hpp"
 
 #include <iostream>
 #include <cstdint>
@@ -48,7 +49,7 @@ public:
 	void Heal(std::int32_t healAmount);
 	bool DrawCard();
 	bool PlayCard(std::int32_t cardIndex);
-	void AddCardToDeck(const std::shared_ptr<cards::Card>& card);
+	void AddCardToDeck(const std::shared_ptr<cards::BaseCard>& card);
 	void PrepareForCombat();
 
 	[[nodiscard]] std::int32_t GetMaxHealth() const
