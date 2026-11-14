@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using CourseProjectCS.Entities;
+using CourseProjectCS.Exceptions;
 
 namespace CourseProjectCS.Cards {
-    internal abstract class BaseCard {
+    internal abstract class BaseCard : IComparable<BaseCard> {
         private static int _createdCount = 0;
         public static int CreatedCount {
             get { return _createdCount; }
@@ -89,9 +90,7 @@ namespace CourseProjectCS.Cards {
 
         public bool Upgrade() {
             if (_isUpgraded) {
-                Console.WriteLine("Карта уже улучшена");
-
-                return false;
+                throw new CardAlreadyUpgradedException($"Карта {Name} уже улучшена");
             }
 
             if (!ApplyUpgrade()) {
@@ -137,6 +136,22 @@ namespace CourseProjectCS.Cards {
         public BaseCard ShallowCopy() {
             CreatedCount++;
             return (BaseCard)MemberwiseClone();
+        }
+
+        public string GetKind() {
+            return "BaseCard";
+        }
+
+        public int CompareTo(BaseCard? other) {
+            if (other == null) return 1;
+
+            int isEqual = string.Compare(Name, other.Name, StringComparison.Ordinal);
+
+            if (isEqual != 0)
+                return isEqual;
+
+            return string.Compare(GetType().FullName, other.GetType().FullName, StringComparison.Ordinal);
+
         }
     }
 }
