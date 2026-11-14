@@ -1,10 +1,11 @@
 ﻿using CourseProjectCS.Cards;
+using CourseProjectCS.Combat;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CourseProjectCS.Entities {
-    internal class Player {
+    internal class Player : ITarget {
         private const int MaxHandSize = 10;
         private readonly CardPile _deck = new CardPile(CardPileType.Deck);
         private readonly CardPile _hand = new CardPile(CardPileType.Hand);
