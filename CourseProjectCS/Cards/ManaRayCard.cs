@@ -36,5 +36,9 @@ namespace CourseProjectCS.Cards {
         public void DealDamage(ITarget target) {
             target.TakeDamage(Value);
         }
+
+        public new string GetKind() {
+            return "ManaRayCard";
+        }
     }
 }

@@ -138,5 +138,9 @@ namespace CourseProjectCS.Cards {
             CreatedCount++;
             return (BaseCard)MemberwiseClone();
         }
+
+        public string GetKind() {
+            return "BaseCard";
+        }
     }
 }
