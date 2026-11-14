@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CourseProjectCS.Entities;
+using CourseProjectCS.Exceptions;
 
 namespace CourseProjectCS.Cards {
     internal abstract class BaseCard : IComparable<BaseCard> {
@@ -89,9 +90,7 @@ namespace CourseProjectCS.Cards {
 
         public bool Upgrade() {
             if (_isUpgraded) {
-                Console.WriteLine("Карта уже улучшена");
-
-                return false;
+                throw new CardAlreadyUpgradedException($"Карта {Name} уже улучшена");
             }
 
             if (!ApplyUpgrade()) {

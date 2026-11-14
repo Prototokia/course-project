@@ -1,6 +1,7 @@
 ﻿using CourseProjectCS.Cards;
 using CourseProjectCS.Combat;
 using CourseProjectCS.Policies;
+using CourseProjectCS.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,7 +39,9 @@ namespace CourseProjectCS.Entities {
         }
 
         public void TakeDamage(int damageAmount) {
-            if (damageAmount < 0) damageAmount = 0;
+            if (damageAmount < 0) {
+                throw new InvalidAmountException("Количество урона не может быть отрицательным");
+            }
             
             CurrentHealth -= damageAmount;
 
@@ -46,7 +49,9 @@ namespace CourseProjectCS.Entities {
         }
 
         public void Heal(int healAmount) {
-            if (healAmount < 0) healAmount = 0;
+            if (healAmount < 0) {
+                throw new InvalidAmountException("Количество лечения не может быть отрицательным");
+            }
 
             CurrentHealth = HealingPolicy.CalculateNewHealth(CurrentHealth, MaxHealth, healAmount);
         }
