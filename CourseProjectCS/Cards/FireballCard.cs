@@ -1,11 +1,12 @@
-﻿using CourseProjectCS.Entities;
+﻿using CourseProjectCS.Combat;
+using CourseProjectCS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 
 namespace CourseProjectCS.Cards {
-    internal class FireballCard : BaseCard {
+    internal class FireballCard : BaseCard, IDamageDealer {
         private const int UpgradeValue = 8;
         public FireballCard(string name, string textAbility, int cost, int value) : base(name, textAbility, CardType.Attack, cost, value) { }
         public FireballCard(FireballCard other) : base(other) { }
@@ -19,9 +20,9 @@ namespace CourseProjectCS.Cards {
         protected override bool ApplyUpgrade() {
             Value += UpgradeValue;
 
-            TextAbility = TextAbility.Replace('5', '8');
+            TextAbility = TextAbility.Replace("12", "20");
 
-            Console.WriteLine($"[ManaRayCard] урон увеличен до {Value}");
+            Console.WriteLine($"[FireballCard] урон увеличен до {Value}");
 
             return true;
         }
@@ -33,6 +34,9 @@ namespace CourseProjectCS.Cards {
             return base.Describe() + $"\nЗначение улучшения: {UpgradeValue}";
         }
 
+        public void DealDamage(ITarget target) {
+            target.TakeDamage(Value);
+        }
     }
 }
-}
+

@@ -1,10 +1,11 @@
-﻿using CourseProjectCS.Entities;
+﻿using CourseProjectCS.Combat;
+using CourseProjectCS.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CourseProjectCS.Cards {
-    internal sealed class ManaRayCard : BaseCard {
+    internal sealed class ManaRayCard : BaseCard, IDamageDealer {
         private const int UpgradeValue = 3;
         public ManaRayCard(string name, string textAbility, int cost, int value) : base(name, textAbility, CardType.Attack, cost, value) { }
         public ManaRayCard(ManaRayCard other) : base(other) { }
@@ -32,5 +33,8 @@ namespace CourseProjectCS.Cards {
             return base.Describe() + $"\nЗначение улучшения: {UpgradeValue}";
         }
 
+        public void DealDamage(ITarget target) {
+            target.TakeDamage(Value);
+        }
     }
 }
