@@ -1,5 +1,6 @@
 ﻿using CourseProjectCS.Cards;
 using CourseProjectCS.Combat;
+using CourseProjectCS.Policies;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,7 @@ namespace CourseProjectCS.Entities {
         public int CurrentMana { get; private set; }
         public int MaxCoins { get; private set; }
         public int CurrentCoins { get; private set; }
+        public IHealingPolicy HealingPolicy { get; set; } = new StandardHealingPolicy();
 
         public Player(int health, int mana, int coins) {
             MaxHealth = health;
@@ -46,9 +48,7 @@ namespace CourseProjectCS.Entities {
         public void Heal(int healAmount) {
             if (healAmount < 0) healAmount = 0;
 
-            CurrentHealth += healAmount;
-
-            if (CurrentHealth > MaxHealth) CurrentHealth = MaxHealth;
+            CurrentHealth = HealingPolicy.CalculateNewHealth(CurrentHealth, MaxHealth, healAmount);
         }
 
         public bool DrawCard() {
