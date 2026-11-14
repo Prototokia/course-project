@@ -60,13 +60,20 @@ namespace CourseProjectCS.Entities {
 
                 while (_discard.Count > 0) {
                     var recycledCard = _discard.DrawCard();
-                    _draw.AddCard(recycledCard);
+
+                    if (recycledCard != null) {
+                        _draw.AddCard(recycledCard);
+                    }
                 }
 
                 _draw.Shuffle();
             }
 
             var drawedCard = _draw.DrawCard();
+
+            if (drawedCard == null) {
+                return false;
+            }
 
             if (_hand.Count >= MaxHandSize) {
                 Console.WriteLine("Рука заполнена!");
@@ -88,13 +95,10 @@ namespace CourseProjectCS.Entities {
             }
 
             var cardToPlay = _hand[cardIndex];
-            if (!cardToPlay.CanPlay(CurrentMana)) {
+
+            if (!cardToPlay.Play(this)) {
                 return false;
             }
-
-            CurrentMana -= cardToPlay.Cost;
-
-            cardToPlay.Play();
 
             _hand.RemoveCardAt(cardIndex);
             _discard.AddCard(cardToPlay);
@@ -102,7 +106,7 @@ namespace CourseProjectCS.Entities {
             return true;
         }
 
-        public void AddCardToDeck(Card card) {
+        public void AddCardToDeck(BaseCard card) {
             _deck.AddCard(card);
         }
 
