@@ -1,10 +1,13 @@
 ﻿using CourseProjectCS.Cards;
+using CourseProjectCS.Combat;
+using CourseProjectCS.Policies;
+using CourseProjectCS.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CourseProjectCS.Entities {
-    internal class Player {
+    internal class Player : ITarget {
         private const int MaxHandSize = 10;
         private readonly CardPile _deck = new CardPile(CardPileType.Deck);
         private readonly CardPile _hand = new CardPile(CardPileType.Hand);
@@ -16,6 +19,7 @@ namespace CourseProjectCS.Entities {
         public int CurrentMana { get; private set; }
         public int MaxCoins { get; private set; }
         public int CurrentCoins { get; private set; }
+        public IHealingPolicy HealingPolicy { get; set; } = new StandardHealingPolicy();
 
         public Player(int health, int mana, int coins) {
             MaxHealth = health;
@@ -35,7 +39,9 @@ namespace CourseProjectCS.Entities {
         }
 
         public void TakeDamage(int damageAmount) {
-            if (damageAmount < 0) damageAmount = 0;
+            if (damageAmount < 0) {
+                throw new InvalidAmountException("Количество урона не может быть отрицательным");
+            }
             
             CurrentHealth -= damageAmount;
 
@@ -43,11 +49,11 @@ namespace CourseProjectCS.Entities {
         }
 
         public void Heal(int healAmount) {
-            if (healAmount < 0) healAmount = 0;
+            if (healAmount < 0) {
+                throw new InvalidAmountException("Количество лечения не может быть отрицательным");
+            }
 
-            CurrentHealth += healAmount;
-
-            if (CurrentHealth > MaxHealth) CurrentHealth = MaxHealth;
+            CurrentHealth = HealingPolicy.CalculateNewHealth(CurrentHealth, MaxHealth, healAmount);
         }
 
         public bool DrawCard() {
@@ -60,13 +66,20 @@ namespace CourseProjectCS.Entities {
 
                 while (_discard.Count > 0) {
                     var recycledCard = _discard.DrawCard();
-                    _draw.AddCard(recycledCard);
+
+                    if (recycledCard != null) {
+                        _draw.AddCard(recycledCard);
+                    }
                 }
 
                 _draw.Shuffle();
             }
 
             var drawedCard = _draw.DrawCard();
+
+            if (drawedCard == null) {
+                return false;
+            }
 
             if (_hand.Count >= MaxHandSize) {
                 Console.WriteLine("Рука заполнена!");
@@ -88,13 +101,10 @@ namespace CourseProjectCS.Entities {
             }
 
             var cardToPlay = _hand[cardIndex];
-            if (!cardToPlay.CanPlay(CurrentMana)) {
+
+            if (!cardToPlay.Play(this)) {
                 return false;
             }
-
-            CurrentMana -= cardToPlay.Cost;
-
-            cardToPlay.Play();
 
             _hand.RemoveCardAt(cardIndex);
             _discard.AddCard(cardToPlay);
@@ -102,7 +112,7 @@ namespace CourseProjectCS.Entities {
             return true;
         }
 
-        public void AddCardToDeck(Card card) {
+        public void AddCardToDeck(BaseCard card) {
             _deck.AddCard(card);
         }
 

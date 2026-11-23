@@ -4,10 +4,10 @@ using System.Text;
 
 namespace CourseProjectCS.Cards {
     internal class CardPile {
-        private readonly List<Card> _cards = [];
+        private readonly List<BaseCard> _cards = [];
         public CardPileType Type { get; }
         public int Count => _cards.Count;
-        public Card this[int index] => _cards[index];
+        public BaseCard this[int index] => _cards[index];
         public CardPile(CardPileType type) {
             Type = type;
         }
@@ -15,7 +15,7 @@ namespace CourseProjectCS.Cards {
         public override string ToString() {
             return $"Колода карт: {Type}. Количество карт: {_cards.Count}";
         }
-        public void AddCard(Card card) {
+        public void AddCard(BaseCard? card) {
             if (card == null) {
                 Console.WriteLine("Нельзя добавить null");
 
@@ -25,7 +25,7 @@ namespace CourseProjectCS.Cards {
             _cards.Add(card);
         }
 
-        public Card? RemoveCardAt(int index) {
+        public BaseCard? RemoveCardAt(int index) {
             if (index < 0 || index >= _cards.Count) {
                 Console.WriteLine("Индекс выходит за границы.");
 
@@ -38,7 +38,7 @@ namespace CourseProjectCS.Cards {
             return removedCard;
         }
 
-        public Card? DrawCard() {
+        public BaseCard? DrawCard() {
             if (_cards.Count == 0) {
                 Console.WriteLine("Стопка пуста, добирать нечего.");
 
