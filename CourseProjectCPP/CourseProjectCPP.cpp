@@ -2,182 +2,150 @@
 //
 #include "CourseProjectCPP.h"
 
+void TryDealDamage(cards::BaseCard& card, combat::ITarget& target)
+{
+    auto* damageDealer = dynamic_cast<combat::IDamageDealer*>(&card);
+
+    if (damageDealer == nullptr)
+    {
+        std::cout << "Card " << card.GetName() << " cannot deal damage\n";
+        return;
+    }
+
+    damageDealer->DealDamage(target);
+}
+
 int main()
 {
-	std::cout << "========== Inheritance Demo ==========" << "\n";
+	std::cout << "\n========== Early and Late Binding ==========\n";
+
+	cards::ManaRayCard manaRay;
+
+	cards::BaseCard& baseReference = manaRay;
+
+	std::cout << "\nEarly binding:\n";
+	std::cout << "Base reference GetKind(): " << baseReference.GetKind() << '\n';
+
+	std::cout << "Derived reference GetKind(): " << manaRay.GetKind() << '\n';
+
+	std::cout << "\nLate binding:\n";
+	std::cout << baseReference.Describe() << '\n';
+
+	std::cout << "\n========== Interfaces and Dynamic Cast ==========\n";
 
 	entities::Player player{ 100, 10, 0 };
 
-	auto drawSource1 = std::make_shared<cards::Card>("Card 1", "Temporary draw source", cards::Card::CardType::eSkill, 0, 0);
+	cards::FireballCard fireball;
+	cards::BarrierCard barrier;
+	cards::MagicIntuitionCard intuition;
 
-	auto drawSource2 = std::make_shared<cards::Card>("Card 2", "Temporary draw source", cards::Card::CardType::eSkill, 0, 0);
+	std::cout << "\nInitial player health: " << player.GetCurrentHealth() << '\n';
 
-	player.AddCardToDeck(drawSource1);
-	player.AddCardToDeck(drawSource2);
-	
-	player.PrepareForCombat();
+	std::cout << "\nAttacking with ManaRayCard:\n";
 
-	{
-		std::cout << "\n===== 1. Creating cards =====\n";
+	TryDealDamage(manaRay, player);
 
-		std::unique_ptr<cards::BaseCard> cardArray[] =
-		{
-			std::make_unique<cards::ManaRayCard>(),
-			std::make_unique<cards::BarrierCard>(),
-			std::make_unique<cards::MagicIntuitionCard>()
-		};
+	std::cout << "Player health: " << player.GetCurrentHealth() << '\n';
 
-		std::cout << "\n===== 2. Describe =====\n";
+	std::cout << "\nAttacking with FireballCard:\n";
 
-		for (const auto& card : cardArray)
-		{
-			std::cout << card->Describe() << "\n\n";
-		}
+	TryDealDamage(fireball, player);
 
-		std::cout << "\n===== 3. String operations =====\n";
+	std::cout << "Player health: " << player.GetCurrentHealth() << '\n';
 
-		StringOperationsDemo(*cardArray[0]);
+	std::cout << "\nChecking cards without IDamageDealer:\n";
 
-		std::cout << "\n===== 4. This demonstration =====\n";
+	TryDealDamage(barrier, player);
+	TryDealDamage(intuition, player);
 
-		cards::CardReceiver receiver;
+	std::cout << "\nFinal player health: " << player.GetCurrentHealth() << '\n';
 
-		cardArray[1]->SendTo(receiver);
+	std::cout << "\n========== Dynamic Configuration ==========\n";
 
-		std::cout << "\n===== 5. Upgrade =====\n";
+	entities::Player healingPlayer{ 100, 10, 0 };
 
-		for (auto& card : cardArray)
-		{
-			card->Upgrade();
-		}
+	healingPlayer.SetCurrentHealth(50);
 
-		std::cout << "\n===== 6. Updated descriptions =====\n";
+	std::cout << "Initial health: " << healingPlayer.GetCurrentHealth() << "/" << healingPlayer.GetMaxHealth() << '\n';
 
-		for (const auto& card : cardArray)
-		{
-			std::cout << card->Describe() << "\n\n";
-		}
+	std::cout << "\nStandard healing:\n";
 
-		std::cout << "\n===== 7. Play cards =====\n";
+	healingPlayer.Heal(20);
 
-		for (const auto& card : cardArray)
-		{
-			card->Play(player);
-		}
+	std::cout << "Health after healing: " << healingPlayer.GetCurrentHealth() << '\n';
 
-		std::cout << "\nRemaining mana: " << player.GetCurrentMana() << '\n';
+	healingPlayer.SetCurrentHealth(50);
 
-		std::cout << "\n===== 8. Cloning =====\n";
+	healingPlayer.SetHealingPolicy(std::make_unique<entities::EnhancedHealingPolicy>());
 
-		std::unique_ptr<cards::BaseCard> clonedCards[] =
-		{
-			cardArray[0]->Clone(),
-			cardArray[1]->Clone(),
-			cardArray[2]->Clone()
-		};
+	std::cout << "\nEnhanced healing:\n";
 
-		for (const auto& card : clonedCards)
-		{
-			std::cout << card->Describe() << "\n\n";
-		}
+	healingPlayer.Heal(20);
 
-		std::cout << "\n===== 9. Static members =====\n";
+	std::cout << "Health after healing: " << healingPlayer.GetCurrentHealth() << '\n';
 
-		std::cout << "Created BaseCard objects: " << cards::BaseCard::GetCreatedCount() << '\n';
+	std::cout << "\n========== Exceptions ==========\n";
 
-		std::cout << "\n===== 10. Virtual destructor =====\n";
+    entities::Player exceptionPlayer{ 100, 10, 0 };
 
-		cardArray[0].reset();
+    std::cout << "\nTesting damage:\n";
 
-		std::cout << "\nLeaving card array scope...\n";
-	}
+    try
+    {
+        exceptionPlayer.TakeDamage(10);
 
-	std::cout << "\n========== Constructors Demo ==========\n";
+        std::cout << "Damage applied successfully. HP: " << exceptionPlayer.GetCurrentHealth() << '\n';
 
-	{
-		cards::ManaRayCard original{ 2 };
+        exceptionPlayer.TakeDamage(-5);
+    }
+    catch (const game::InvalidAmount& error)
+    {
+        std::cout << "Invalid amount caught: " << error.what() << '\n';
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+    }
 
-		cards::ManaRayCard copied{ original };
+    std::cout << "\nTesting healing:\n";
 
-		cards::ManaRayCard moved{ std::move(copied) };
+    try
+    {
+        exceptionPlayer.Heal(10);
 
-		cards::ManaRayCard assigned;
+        std::cout << "Healing completed. HP: " << exceptionPlayer.GetCurrentHealth() << '\n';
 
-		assigned = original;
-		assigned = std::move(moved);
-		assigned = assigned;     
-	}
+        exceptionPlayer.Heal(-10);
+    }
+    catch (const game::InvalidAmount& error)
+    {
+        std::cout << "Invalid amount caught: " << error.what() << '\n';
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+    }
 
-	std::cout << "\n========== Shallow copy ==========\n";
-	{
-		cards::ManaRayCard original;
+    std::cout << "\nTesting card upgrade:\n";
 
-		original.ShareMetadata()->flavorText = "A powerful beam of mana";
+    cards::ManaRayCard upgradeCard{ 1 };
 
-		auto shallowCopy = original.ShareMetadata();
+    try
+    {
+        upgradeCard.Upgrade();
 
-		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
+        std::cout << "Card upgraded successfully.\n";
 
-		std::cout << "Shallow copy: " << shallowCopy->flavorText << '\n';
+        upgradeCard.Upgrade();
+    }
+    catch (const game::CardAlreadyUpgraded& error)
+    {
+        std::cout << "Upgrade error caught: " << error.what() << '\n';
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+    }
 
-		std::cout << "Shared pointers count: " << shallowCopy.use_count() << '\n';
-
-		shallowCopy->flavorText = "Changed through shallow copy";
-
-		std::cout << "\nAfter modification:\n";
-
-		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
-
-		std::cout << "Shallow copy: " << shallowCopy->flavorText << '\n';
-	}
-	std::cout << "\n========== Deep copy ==========\n";
-	{
-		cards::ManaRayCard original;
-
-		original.ShareMetadata()->flavorText = "Original metadata";
-
-		std::unique_ptr<cards::BaseCard> deepCopy = original.Clone();
-
-		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
-
-		std::cout << "Deep copy: " << deepCopy->ShareMetadata()->flavorText << '\n';
-
-		deepCopy->ShareMetadata()->flavorText = "Changed through deep copy";
-
-		std::cout << "\nAfter modification:\n";
-
-		std::cout << "Original: " << original.ShareMetadata()->flavorText << '\n';
-
-		std::cout << "Deep copy: " << deepCopy->ShareMetadata()->flavorText << '\n';
-	}
 	return 0;
-}
-
-void StringOperationsDemo(const cards::BaseCard& card)
-{
-	std::string name{ card.GetName() };
-
-	std::cout << "1. Concatenation\n";
-
-	std::string label = "Selected card " + name;
-	std::cout << label << "\n";
-
-	std::cout << "2. Substring find\n";
-
-	std::size_t position = name.find("Ray");
-
-	if (position != std::string::npos)
-	{
-		std::cout << "3. Substring extraction\n";
-
-		std::string substring = name.substr(position, 3);
-		std::cout << "Found substring: " << substring << "\n";
-	}
-
-	std::cout << "4. String comparison\n";
-
-	if (name == "Mana Ray")
-	{
-		std::cout << "This is Mana Ray!\n";
-	}
 }

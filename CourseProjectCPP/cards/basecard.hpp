@@ -55,7 +55,7 @@ private:
 public:
 	BaseCard(std::string_view name, std::string_view textAbility, CardType cardType, std::int32_t cost, std::int32_t value);
 	BaseCard();
-	virtual ~BaseCard();
+	virtual ~BaseCard() noexcept;
 
 	bool Play(entities::Player& player);
 	bool Upgrade();
@@ -64,6 +64,8 @@ public:
 	virtual std::string Describe() const;
 
     void SendTo(CardReceiver& receiver) const;
+
+    std::string_view GetKind() const;
 
     [[nodiscard]] static std::int32_t GetCreatedCount()
     {
@@ -124,8 +126,6 @@ public:
     {
         m_value = value;
     }
-
-
 
 protected:
     BaseCard(const BaseCard& other);

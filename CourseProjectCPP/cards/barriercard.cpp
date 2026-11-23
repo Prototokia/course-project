@@ -56,7 +56,7 @@ BarrierCard& BarrierCard::operator=(BarrierCard&& other) noexcept
 	return *this;
 }
 
-BarrierCard::~BarrierCard()
+BarrierCard::~BarrierCard() noexcept
 {
 	std::cout << "[BarrierCard] destroyed\n";
 }

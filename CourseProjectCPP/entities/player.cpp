@@ -1,4 +1,6 @@
 #include "player.hpp"
+#include "policies/standardhealingpolicy.hpp"
+#include "exceptions/gameruleexceptions.hpp"
 
 namespace entities
 {
@@ -9,6 +11,7 @@ Player::Player(std::int32_t health, std::int32_t mana, std::int32_t coins)
 	, m_coins{ coins }
 	, m_currentHealth{ health }
 	, m_currentMana{ mana }
+	, m_healingPolicy{std::make_unique<StandardHealingPolicy>()}
 {}
 
 
@@ -16,9 +19,7 @@ void Player::TakeDamage(std::int32_t damageAmount)
 {
 	if (damageAmount < 0)
 	{
-		std::cout << "Damage amount must be positive.\n";
-
-		return;
+		throw game::InvalidAmount{ "Damage", damageAmount };
 	}
 	if (m_currentHealth - damageAmount < 0)
 	{
@@ -34,18 +35,10 @@ void Player::Heal(std::int32_t healAmount)
 {
 	if (healAmount < 0)
 	{
-		std::cout << "Heal amount must be positive.\n";
-
-		return;
+		throw game::InvalidAmount{ "Healing", healAmount };
 	}
-	if (m_currentHealth + healAmount > m_maxHealth)
-	{
-		m_currentHealth = m_maxHealth;
-	}
-	else
-	{
-		m_currentHealth += healAmount;
-	}
+	
+	m_currentHealth = m_healingPolicy->CalculateNewHealth(m_currentHealth, m_maxHealth, healAmount);
 }
 
 bool Player::DrawCard()
@@ -117,7 +110,7 @@ bool Player::PlayCard(std::int32_t cardIndex)
 
 		return false;
 	}
-	if (!cardToPlay->Play(m_currentMana))
+	if (!cardToPlay->Play(*this))
 	{
 		return false;
 	}
@@ -128,14 +121,14 @@ bool Player::PlayCard(std::int32_t cardIndex)
 	return true;
 }
 
-void Player::AddCardToDeck(const std::shared_ptr<cards::Card>& card)
+void Player::AddCardToDeck(const std::shared_ptr<cards::BaseCard>& card)
 {
 	if (!card)
 	{
 		return;
 	}
 
-	m_deck.AddCard(std::weak_ptr<cards::Card>{ card });;
+	m_deck.AddCard(std::weak_ptr<cards::BaseCard>{ card });;
 }
 
 void Player::PrepareForCombat()
@@ -149,11 +142,11 @@ void Player::PrepareForCombat()
 			continue;
 		}
 
-		m_draw.AddCard(std::weak_ptr<cards::Card>{ card });
+		m_draw.AddCard(std::weak_ptr<cards::BaseCard>{ card });
 	}
 }
 
-Player::~Player()
+Player::~Player() noexcept
 {
 	std::cout << "Player destroyed.\n";
 }

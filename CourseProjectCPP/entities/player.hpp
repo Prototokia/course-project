@@ -1,6 +1,9 @@
 #pragma once
 
-#include "cardpile.hpp"
+#include "cards/cardpile.hpp"
+#include "combat/itarget.hpp"
+#include "policies/ihealingpolicy.hpp"
+#include "cards/basecard.hpp"
 
 #include <iostream>
 #include <cstdint>
@@ -9,7 +12,7 @@
 namespace entities
 {
 
-class Player
+class Player : public combat::ITarget
 {
 
 private:
@@ -30,6 +33,8 @@ private:
 	cards::CardPile m_discard{ cards::CardPile::CardPileType::eDiscard, BASE_CAPACITY };
 	cards::CardPile m_draw{ cards::CardPile::CardPileType::eDraw, BASE_CAPACITY };
 
+	std::unique_ptr<IHealingPolicy> m_healingPolicy;
+
 public:
 	Player(std::int32_t health, std::int32_t mana, std::int32_t coins);
 
@@ -38,13 +43,13 @@ public:
 	Player(Player&&)                 = delete;
 	Player& operator=(const Player&) = delete;
 	Player& operator=(Player&&)      = delete;
-	~Player();
+	~Player() noexcept override;
 
-	void TakeDamage(std::int32_t damageAmount);
+	void TakeDamage(std::int32_t damageAmount) override;
 	void Heal(std::int32_t healAmount);
 	bool DrawCard();
 	bool PlayCard(std::int32_t cardIndex);
-	void AddCardToDeck(const std::shared_ptr<cards::Card>& card);
+	void AddCardToDeck(const std::shared_ptr<cards::BaseCard>& card);
 	void PrepareForCombat();
 
 	[[nodiscard]] std::int32_t GetMaxHealth() const
@@ -95,6 +100,13 @@ public:
 	void SetCoins(std::int32_t amount)
 	{
 		m_coins = amount;
+	}
+
+	void SetHealingPolicy(std::unique_ptr<IHealingPolicy> policy)
+	{
+		if (!policy) return;
+
+		m_healingPolicy = std::move(policy);
 	}
 };
 

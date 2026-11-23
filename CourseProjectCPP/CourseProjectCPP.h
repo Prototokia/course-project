@@ -3,19 +3,22 @@
 
 #pragma once
 
-#include "player.hpp"
-#include "cardpile.hpp"
-#include "card.hpp"
-#include "basecard.hpp"
-#include "manaraycard.hpp"
-#include "barriercard.hpp"
-#include "magicintuitioncard.hpp"
+#include "entities/player.hpp"
+#include "cards/cardpile.hpp"
+#include "cards/basecard.hpp"
+#include "cards/manaraycard.hpp"
+#include "cards/barriercard.hpp"
+#include "cards/magicintuitioncard.hpp"
+#include "cards/fireballcard.hpp"
+#include "policies/enhancedhealingpolicy.hpp"
+#include "exceptions/gameruleexceptions.hpp"
+#include "combat/idamagedealer.hpp"
+#include "combat/itarget.hpp"
 
+#include <exception>
 #include <iostream>
 #include <cstdint>
 #include <memory>
 #include <utility>
-
-void StringOperationsDemo(const cards::BaseCard& card);
 
 // TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.
