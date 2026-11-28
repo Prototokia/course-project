@@ -3,6 +3,8 @@ using CourseProjectCS.Combat;
 using CourseProjectCS.Entities;
 using CourseProjectCS.Exceptions;
 using CourseProjectCS.Policies;
+using CourseProjectCS.Shop;
+using CourseProjectCS.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -11,124 +13,132 @@ using CardCollection = System.Collections.Generic.List<CourseProjectCS.Cards.Bas
 namespace CourseProjectCS {
     internal class Program {
         static void Main(string[] args) {
-            Console.WriteLine("===== Демонстрация полиморфизма =====");
+            Console.WriteLine("\n========== Перегрузка методов ==========");
 
-            Console.WriteLine("===== Раннее и позднее связывание =====");
+            CardPile searchPile = new CardPile(CardPileType.Deck);
 
-            ManaRayCard bindingCard = new ManaRayCard("Проверка связывания", "Наносит урон", 1, 5);
+            searchPile.AddCard(new ManaRayCard("Mana Ray", "Наносит 5 урона", 1, 5));
 
-            BaseCard baseReference = bindingCard;
+            searchPile.AddCard(new BarrierCard("Barrier", "Даёт 5 защиты", 1, 5));
 
-            Console.WriteLine($"Через ManaRayCard: {bindingCard.GetKind()}");
-            Console.WriteLine($"Через BaseCard: {baseReference.GetKind()}");
+            searchPile.AddCard(new FireballCard("Fireball", "Наносит 12 урона", 2, 12));
 
-            Console.WriteLine(baseReference.Describe());
+            BaseCard? foundByName = searchPile.FindFirstCard("Mana Ray");
 
-            Console.WriteLine("===== Интерфейсы и проверка типов =====");
+            Console.WriteLine($"Поиск по названию: {foundByName?.Name ?? "Карта не найдена"}");
 
-            Player combatPlayer = new Player(100, 10, 20);
+            BaseCard? foundByType = searchPile.FindFirstCard(CardType.Attack);
 
-            BaseCard attackCard = new ManaRayCard("Луч маны", "Наносит 5 урона", 1, 5);
+            Console.WriteLine($"Поиск по типу: {foundByType?.Name ?? "Карта не найдена"}");
 
-            BaseCard defensiveCard = new BarrierCard("Барьер", "Дает 5 защиты", 1, 5);
+            Console.WriteLine("\n========== Перегрузка операторов ==========");
 
-            Console.WriteLine($"Луч маны реализует IDamageDealer: {attackCard is IDamageDealer}");
+            Coins balance = new Coins(100);
+            Coins reward = new Coins(50);
 
-            Console.WriteLine($"Барьер реализует IDamageDealer: {defensiveCard is IDamageDealer}");
+            Coins total = balance + reward;
 
-            ITarget target = combatPlayer;
+            Console.WriteLine($"Баланс + награда: {total}");
 
-            TryDealDamage(attackCard, target);
-            TryDealDamage(defensiveCard, target);
+            balance += reward;
 
-            Console.WriteLine($"Здоровье игрока: {combatPlayer.CurrentHealth}");
+            Console.WriteLine($"Баланс после +=: {balance}");
 
-            Console.WriteLine("===== Конфигурирование =====");
+            Console.WriteLine($"Баланс равен общей сумме: {(balance == total ? "Да" : "Нет")}");
 
-            Player healingPlayer = new Player(100, 10, 0);
+            Console.WriteLine($"Баланс отличается от награды: {(balance != reward ? "Да" : "Нет")}");
 
-            healingPlayer.TakeDamage(40);
+            int comparison = reward.CompareTo(balance);
 
-            healingPlayer.HealingPolicy = new StandardHealingPolicy();
-            healingPlayer.Heal(10);
-
-            Console.WriteLine($"Здоровье после обычного лечения: {healingPlayer.CurrentHealth}");
-
-            healingPlayer.TakeDamage(40);
-
-            healingPlayer.HealingPolicy = new EnhancedHealingPolicy();
-            healingPlayer.Heal(10);
-
-            Console.WriteLine($"Здоровье после усиленного лечения: {healingPlayer.CurrentHealth}");
-
-            Console.WriteLine("===== Исключения =====");
-
-            try {
-                combatPlayer.TakeDamage(-10);
+            if (comparison < 0) {
+                Console.WriteLine("Награда меньше баланса.");
             }
-            catch (InvalidAmountException ex) {
-                Console.WriteLine($"Ошибка игрового правила: {ex.Message}");
+            else if (comparison > 0) {
+                Console.WriteLine("Награда больше баланса.");
             }
-            finally {
-                Console.WriteLine("Проверка урона завершена");
+            else {
+                Console.WriteLine("Награда равна балансу.");
             }
 
-            BaseCard upgradeCard = new ManaRayCard("Улучшаемая карта","Наносит урон", 1, 5);
+            Console.WriteLine("\n========== Доступ внутри сборки  ==========");
 
-            try {
-                Console.WriteLine($"Первое улучшение: {upgradeCard.Upgrade()}");
+            CardMetadata metadata = new CardMetadata();
 
-                upgradeCard.Upgrade();
-            }
-            catch (CardAlreadyUpgradedException ex) {
-                Console.WriteLine($"Ошибка игрового правила: {ex.Message}");
-            }
-            finally {
-                Console.WriteLine("Проверка улучшения завершена");
-            }
+            metadata.FlavorText = "Описание древней магии";
 
-            Console.WriteLine("===== Сортировка карт и IComparable =====");
+            Console.WriteLine($"Описание метаданных: {metadata.FlavorText}");
 
-            CardCollection sortableCards = new CardCollection {
-                new BarrierCard("Барьер", "Защита", 1, 5),
-                new FireballCard("Огненный шар", "Урон", 2, 10),
-                new MagicIntuitionCard("Магическая интуиция", "Добор", 2, 1),
-                new ManaRayCard("Атака", "Урон", 1, 5)
-            };
+            Console.WriteLine("\n========== Обобщённая функция ==========");
 
-            sortableCards.Sort();
+            double integerPercent = NumericUtils.Percent(3, 12);
 
-            foreach (var card in sortableCards) {
-                Console.WriteLine(card.Name);
-            }
+            Console.WriteLine($"Процент для целых чисел: {integerPercent}%");
 
-            Console.WriteLine("===== Освобождение ресурса =====");
+            double floatingPercent = NumericUtils.Percent(1.5, 6.0);
 
-            using (var stream = new MemoryStream()) {
-                using (var writer = new StreamWriter(stream, leaveOpen: true)) {
-                    writer.WriteLine(attackCard.Describe());
+            Console.WriteLine($"Процент для дробных чисел: {floatingPercent}%");
+
+            // Недопустимый тип: Coins не реализует INumber<Coins>.
+            // NumericUtils.Percent(new Coins(3), new Coins(12));
+
+            Console.WriteLine("\n========== Обобщённый класс ==========");
+
+            ShopCatalog<BaseCard> generalShop = new ShopCatalog<BaseCard>();
+
+            generalShop.AddOffer(new ManaRayCard("Mana Ray", "Наносит 5 урона", 1, 5), new Coins(50), 3);
+
+            generalShop.AddOffer(new BarrierCard("Barrier", "Даёт 5 защиты", 1, 5), new Coins(35), 2);
+
+            generalShop.AddOffer(new FireballCard("Fireball", "Наносит 12 урона", 2, 12), new Coins(75), 1);
+
+            List<int> attackOffers = generalShop.FindOffersOf<ManaRayCard>();
+
+            List<int> defenseOffers = generalShop.FindOffersOf<BarrierCard>();
+
+            Console.WriteLine($"Количество предложений с атакующими картами: {attackOffers.Count}");
+
+            Console.WriteLine($"Количество предложений с защитными картами: {defenseOffers.Count}");
+
+            if (attackOffers.Count > 0) {
+                int index = attackOffers[0];
+
+                var offer = generalShop[index];
+
+                Console.WriteLine($"Название карты: {offer.cardName}");
+                Console.WriteLine($"Цена: {offer.price}");
+                Console.WriteLine($"Количество в наличии: {offer.stock}");
+
+                BaseCard? purchasedCard = generalShop.Buy(index);
+
+                if (purchasedCard != null) {
+                    Console.WriteLine("Карта успешно приобретена:");
+                    Console.WriteLine(purchasedCard.Describe());
                 }
 
-                stream.Position = 0;
+                Console.WriteLine($"Остаток после покупки: {generalShop[index].stock}");
 
-                using (var reader = new StreamReader(stream, leaveOpen: true)) {
-                    Console.WriteLine(reader.ReadToEnd());
-                }
+                generalShop.Restock(index, 2);
+
+                Console.WriteLine($"Остаток после пополнения: {generalShop[index].stock}");
             }
+
+            ShopCatalog<ManaRayCard> attackShop = new ShopCatalog<ManaRayCard>();
+
+            attackShop.AddOffer(new ManaRayCard("Mana Ray", "Наносит 5 урона", 1, 5), new Coins(50), 2);
+
+            Console.WriteLine($"Количество предложений в каталоге атакующих карт: {attackShop.OfferCount}");
+
+            ShopCatalog<BarrierCard> defenseShop = new ShopCatalog<BarrierCard>();
+
+            defenseShop.AddOffer(new BarrierCard("Barrier", "Даёт 5 защиты", 1, 5), new Coins(35), 2);
+
+            Console.WriteLine($"Количество предложений в каталоге защитных карт: {defenseShop.OfferCount}");
+
+            // Недопустимый тип для шаблонного класса:
+            // ShopCatalog<Coins> invalidShop = new ShopCatalog<Coins>();
+
+            // Недопустимый тип для шаблонного метода:
+            // generalShop.FindOffersOf<Coins>();
         }
-
-        private static void TryDealDamage(BaseCard card, ITarget target) {
-            var damageDealer = card as IDamageDealer;
-
-            if (damageDealer == null) {
-                Console.WriteLine($"Карта {card.Name} не может наносить урон");
-
-                return;
-            }
-
-            damageDealer.DealDamage(target);
-
-            Console.WriteLine($"Карта {card.Name} нанесла урон");
-        } 
     }
 }
