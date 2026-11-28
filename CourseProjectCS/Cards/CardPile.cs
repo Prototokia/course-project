@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace CourseProjectCS.Cards {
@@ -62,6 +63,24 @@ namespace CourseProjectCS.Cards {
 
                 (_cards[i], _cards[j]) = (_cards[j],  _cards[i]);
             }
+        }
+
+        public BaseCard? FindFirstCard(string name) {
+            foreach (var card in _cards) {
+                if (card.Name == name)
+                    return card;
+            }
+
+            return null;
+        }
+
+        public BaseCard? FindFirstCard(CardType cardType) {
+            foreach (var card in _cards) {
+                if (card.Type == cardType)
+                    return card;
+            }
+
+            return null;
         }
     }
 }
