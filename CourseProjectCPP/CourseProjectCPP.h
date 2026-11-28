@@ -14,6 +14,9 @@
 #include "exceptions/gameruleexceptions.hpp"
 #include "combat/idamagedealer.hpp"
 #include "combat/itarget.hpp"
+#include "entities/coins.hpp"
+#include "utils/percent.hpp"
+#include "shop/shopcatalog.hpp"
 
 #include <exception>
 #include <iostream>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -66,6 +67,8 @@ public:
     void SendTo(CardReceiver& receiver) const;
 
     std::string_view GetKind() const;
+
+    friend std::ostream& operator<<(std::ostream& out, const BaseCard& card);
 
     [[nodiscard]] static std::int32_t GetCreatedCount()
     {

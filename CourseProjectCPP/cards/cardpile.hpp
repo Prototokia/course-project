@@ -41,6 +41,8 @@ public:
 	void AddCard(std::weak_ptr<BaseCard> card);
 	std::weak_ptr<BaseCard> RemoveCardAt(std::int32_t index);
 	std::weak_ptr<BaseCard> DrawCard();
+	std::weak_ptr<BaseCard> FindFirstCard(std::string_view name) const;
+	std::weak_ptr<BaseCard> FindFirstCard(cards::BaseCard::CardType cardType) const;
 
 	[[nodiscard]] std::weak_ptr<BaseCard> GetCardAt(std::int32_t index) const
 	{

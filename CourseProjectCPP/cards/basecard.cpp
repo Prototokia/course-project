@@ -168,4 +168,9 @@ std::string_view BaseCard::GetKind() const
     return "BaseCard";
 }
 
+std::ostream& operator<<(std::ostream& out, const BaseCard& card)
+{
+    return out << card.Describe();
+}
+
 }

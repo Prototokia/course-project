@@ -28,6 +28,8 @@ add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h"
 
     "entities/player.cpp"
     "entities/player.hpp"
+    "entities/coins.hpp"
+    "entities/coins.cpp"
 
     "combat/idamagedealer.hpp"
     "combat/itarget.hpp"
@@ -39,6 +41,10 @@ add_executable (CourseProjectCPP "CourseProjectCPP.cpp" "CourseProjectCPP.h"
     "policies/enhancedhealingpolicy.hpp"
 
     "exceptions/gameruleexceptions.hpp"
+
+    "shop/shopcatalog.hpp"
+
+    "utils/percent.hpp"
 )
 
 target_include_directories(CourseProjectCPP PRIVATE
