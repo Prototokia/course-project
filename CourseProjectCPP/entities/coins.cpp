@@ -18,4 +18,17 @@ Coins& Coins::operator+=(const Coins& other)
 	return *this;
 }
 
+Coins operator+(Coins left, const Coins& right)
+{
+	left += right;
+	return left;
+}
+
+std::ostream& operator<<(std::ostream& out, const Coins& coins)
+{
+	out << coins.m_amount << " coins";
+
+	return out;
+}
+
 }

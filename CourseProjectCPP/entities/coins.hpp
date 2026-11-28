@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <ostream>
 #include <compare>
 
 namespace entities
@@ -25,13 +26,11 @@ public:
 
 	Coins& operator+=(const Coins& other);
 	
-	friend Coins operator+(Coins left, const Coins& right)
-	{
-		left += right;
-		return left;
-	}
+	friend Coins operator+(Coins left, const Coins& right);
 
 	auto operator<=>(const Coins& other) const = default;
+
+	friend std::ostream& operator<<(std::ostream& out, const Coins& coins);
 
 	[[nodiscard]] std::int32_t GetAmount() const
 	{
