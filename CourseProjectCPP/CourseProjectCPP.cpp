@@ -2,150 +2,148 @@
 //
 #include "CourseProjectCPP.h"
 
-void TryDealDamage(cards::BaseCard& card, combat::ITarget& target)
-{
-    auto* damageDealer = dynamic_cast<combat::IDamageDealer*>(&card);
-
-    if (damageDealer == nullptr)
-    {
-        std::cout << "Card " << card.GetName() << " cannot deal damage\n";
-        return;
-    }
-
-    damageDealer->DealDamage(target);
-}
-
 int main()
 {
-	std::cout << "\n========== Early and Late Binding ==========\n";
+    std::cout << "\n========== Function Overloading ==========\n";
 
-	cards::ManaRayCard manaRay;
+    cards::CardPile searchPile{cards::CardPile::CardPileType::eDeck, 2};
 
-	cards::BaseCard& baseReference = manaRay;
+    auto searchManaRay = std::make_shared<cards::ManaRayCard>();
+    auto searchBarrier = std::make_shared<cards::BarrierCard>();
 
-	std::cout << "\nEarly binding:\n";
-	std::cout << "Base reference GetKind(): " << baseReference.GetKind() << '\n';
+    searchPile.AddCard(std::weak_ptr<cards::BaseCard>{searchBarrier});
+    searchPile.AddCard(std::weak_ptr<cards::BaseCard>{searchManaRay});
+    
 
-	std::cout << "Derived reference GetKind(): " << manaRay.GetKind() << '\n';
+    auto foundByName = searchPile.FindFirstCard("Barrier").lock();
 
-	std::cout << "\nLate binding:\n";
-	std::cout << baseReference.Describe() << '\n';
-
-	std::cout << "\n========== Interfaces and Dynamic Cast ==========\n";
-
-	entities::Player player{ 100, 10, 0 };
-
-	cards::FireballCard fireball;
-	cards::BarrierCard barrier;
-	cards::MagicIntuitionCard intuition;
-
-	std::cout << "\nInitial player health: " << player.GetCurrentHealth() << '\n';
-
-	std::cout << "\nAttacking with ManaRayCard:\n";
-
-	TryDealDamage(manaRay, player);
-
-	std::cout << "Player health: " << player.GetCurrentHealth() << '\n';
-
-	std::cout << "\nAttacking with FireballCard:\n";
-
-	TryDealDamage(fireball, player);
-
-	std::cout << "Player health: " << player.GetCurrentHealth() << '\n';
-
-	std::cout << "\nChecking cards without IDamageDealer:\n";
-
-	TryDealDamage(barrier, player);
-	TryDealDamage(intuition, player);
-
-	std::cout << "\nFinal player health: " << player.GetCurrentHealth() << '\n';
-
-	std::cout << "\n========== Dynamic Configuration ==========\n";
-
-	entities::Player healingPlayer{ 100, 10, 0 };
-
-	healingPlayer.SetCurrentHealth(50);
-
-	std::cout << "Initial health: " << healingPlayer.GetCurrentHealth() << "/" << healingPlayer.GetMaxHealth() << '\n';
-
-	std::cout << "\nStandard healing:\n";
-
-	healingPlayer.Heal(20);
-
-	std::cout << "Health after healing: " << healingPlayer.GetCurrentHealth() << '\n';
-
-	healingPlayer.SetCurrentHealth(50);
-
-	healingPlayer.SetHealingPolicy(std::make_unique<entities::EnhancedHealingPolicy>());
-
-	std::cout << "\nEnhanced healing:\n";
-
-	healingPlayer.Heal(20);
-
-	std::cout << "Health after healing: " << healingPlayer.GetCurrentHealth() << '\n';
-
-	std::cout << "\n========== Exceptions ==========\n";
-
-    entities::Player exceptionPlayer{ 100, 10, 0 };
-
-    std::cout << "\nTesting damage:\n";
-
-    try
+    if (foundByName)
     {
-        exceptionPlayer.TakeDamage(10);
-
-        std::cout << "Damage applied successfully. HP: " << exceptionPlayer.GetCurrentHealth() << '\n';
-
-        exceptionPlayer.TakeDamage(-5);
-    }
-    catch (const game::InvalidAmount& error)
-    {
-        std::cout << "Invalid amount caught: " << error.what() << '\n';
-    }
-    catch (const std::exception& error)
-    {
-        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+        std::cout << "Found by name: " << foundByName->GetName() << '\n';
     }
 
-    std::cout << "\nTesting healing:\n";
+    auto foundByType = searchPile.FindFirstCard(cards::BaseCard::CardType::eAttack).lock();
 
-    try
+    if (foundByType)
     {
-        exceptionPlayer.Heal(10);
-
-        std::cout << "Healing completed. HP: " << exceptionPlayer.GetCurrentHealth() << '\n';
-
-        exceptionPlayer.Heal(-10);
-    }
-    catch (const game::InvalidAmount& error)
-    {
-        std::cout << "Invalid amount caught: " << error.what() << '\n';
-    }
-    catch (const std::exception& error)
-    {
-        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+        std::cout << "Found by type: " << foundByType->GetName() << '\n';
     }
 
-    std::cout << "\nTesting card upgrade:\n";
+    std::cout << "\n========== Operator Overloading ==========\n";
 
-    cards::ManaRayCard upgradeCard{ 1 };
+    entities::Coins balance{ 100 };
+    entities::Coins reward{ 50 };
 
-    try
+    entities::Coins total = balance + reward;
+
+    std::cout << "Balance + reward: " << total << '\n';
+
+    balance += reward;
+
+    std::cout << "Balance after +=: " << balance << '\n';
+
+    std::cout << std::boolalpha;
+    std::cout << "Balance == total: " << (balance == total) << '\n';
+
+    const auto comparison = reward <=> balance;
+
+    if (comparison == std::strong_ordering::less)
     {
-        upgradeCard.Upgrade();
-
-        std::cout << "Card upgraded successfully.\n";
-
-        upgradeCard.Upgrade();
+        std::cout << "Reward is less than balance.\n";
     }
-    catch (const game::CardAlreadyUpgraded& error)
+    else if (comparison == std::strong_ordering::greater)
     {
-        std::cout << "Upgrade error caught: " << error.what() << '\n';
+        std::cout << "Reward is greater than balance.\n";
     }
-    catch (const std::exception& error)
+    else
     {
-        std::cout << "Unexpected standard exception: " << error.what() << '\n';
+        std::cout << "Reward equals balance.\n";
     }
+
+    std::cout << "\n========== Friend Output Operator ==========\n";
+
+    entities::Coins displayedCoins{ 250 };
+
+    std::cout << "Player coins: " << displayedCoins << '\n';
+
+    cards::ManaRayCard displayedManaRay;
+    cards::BarrierCard displayedBarrier;
+
+    const cards::BaseCard& firstCard = displayedManaRay;
+    const cards::BaseCard& secondCard = displayedBarrier;
+
+    std::cout << firstCard << '\n';
+    std::cout << secondCard << '\n';
+
+    std::cout << "\n========== Function Template ==========\n";
+
+    const double integerPercent = utils::Percent(3, 12);
+
+    std::cout << "Integer percent: " << integerPercent << "%\n";
+
+    const double floatingPercent = utils::Percent(1.5, 6.0);
+
+    // Недопустимый тип: Coins не удовлетворяет концепту Numeric.
+    // utils::Percent(entities::Coins{3}, entities::Coins{12});
+
+    std::cout << "Floating-point percent: " << floatingPercent << "%\n";
+
+    std::cout << "\n========== Class Template ==========\n";
+
+    shop::ShopCatalog<cards::BaseCard> generalShop;
+
+    generalShop.AddOffer(std::make_unique<cards::ManaRayCard>(), entities::Coins{ 50 }, 3);
+
+    generalShop.AddOffer(std::make_unique<cards::BarrierCard>(),entities::Coins{ 35 }, 2);
+
+    generalShop.AddOffer(std::make_unique<cards::FireballCard>(), entities::Coins{ 75 }, 1);
+
+    const auto attackOffers = generalShop.FindOffersOf<cards::ManaRayCard>();
+
+    const auto defenseOffers = generalShop.FindOffersOf<cards::BarrierCard>();
+
+    std::cout << "Attack offers: " << attackOffers.size() << '\n';
+    std::cout << "Defense offers: " << defenseOffers.size() << '\n';
+
+    if (!attackOffers.empty())
+    {
+        const std::size_t index = attackOffers.front();
+
+        std::cout << "Card: " << generalShop.GetPrototype(index).GetName() << '\n';
+
+        std::cout << "Price: " << generalShop.GetPrice(index) << '\n';
+
+        std::cout << "Stock: " << generalShop.GetStock(index) << '\n';
+
+        auto purchasedCard = generalShop.Buy(index);
+
+        if (purchasedCard)
+        {
+            std::cout << "Purchased card:\n";
+            std::cout << *purchasedCard << '\n';
+        }
+
+        std::cout << "Stock after purchase: " << generalShop.GetStock(index) << '\n';
+
+        generalShop.Restock(index, 2);
+
+        std::cout << "Stock after restocking: " << generalShop.GetStock(index) << '\n';
+    }
+
+    shop::ShopCatalog<cards::ManaRayCard> attackShop;
+
+    attackShop.AddOffer(std::make_unique<cards::ManaRayCard>(), entities::Coins{ 50 }, 2);
+
+    std::cout << "ManaRay catalog offers: " << attackShop.GetOfferCount() << '\n';
+
+    shop::ShopCatalog<cards::BarrierCard> defenseShop;
+
+    defenseShop.AddOffer(std::make_unique<cards::BarrierCard>(), entities::Coins{ 35 }, 2);
+
+    std::cout << "Barrier catalog offers: " << defenseShop.GetOfferCount() << '\n';
+
+    // Недопустимый тип: Coins не наследуется от BaseCard.
+    // shop::ShopCatalog<entities::Coins> invalidCatalog;
 
 	return 0;
 }
