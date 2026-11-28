@@ -66,4 +66,44 @@ CardPile::~CardPile()
 	std::cout << "CardPile destroyed.\n";
 }
 
+std::weak_ptr<BaseCard> CardPile::FindFirstCard(std::string_view name) const
+{
+	for (std::size_t i = 0; i < m_cards.size(); i++)
+	{
+		auto lockedCard = m_cards[i].lock();
+
+		if (lockedCard == nullptr)
+		{
+			continue;
+		}
+
+		if (lockedCard->GetName() == name)
+		{
+			return m_cards[i];
+		}
+	}
+
+	return std::weak_ptr<BaseCard>{};
+}
+
+std::weak_ptr<BaseCard> CardPile::FindFirstCard(cards::BaseCard::CardType cardType) const
+{
+	for (std::size_t i = 0; i < m_cards.size(); i++)
+	{
+		auto lockedCard = m_cards[i].lock();
+
+		if (lockedCard == nullptr)
+		{
+			continue;
+		}
+
+		if (lockedCard->GetCardType() == cardType)
+		{
+			return m_cards[i];
+		}
+	}
+
+	return std::weak_ptr<BaseCard>{};
+}
+
 } // namespace cards
